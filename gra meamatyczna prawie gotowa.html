@@ -1,0 +1,4371 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMaster Pro - Akademia Matematyki</title>
+    <style>
+        /* ===================== DESIGN SYSTEM ===================== */
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #6ee7b7;
+            --danger: #fda4af;
+            --bg: #070b16;
+            --bg-2: #0b1226;
+            --panel: rgba(17, 26, 48, 0.72);
+            --line: rgba(148, 163, 184, 0.16);
+            --text: #eef2ff;
+            --muted: #93a1c4;
+            --amber: #f5a35b;
+            --amber-soft: #ffd9ae;
+            --amber-deep: #e08c47;
+            --radius: 24px;
+            color-scheme: dark;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 700px at 10% -12%, rgba(99, 102, 241, 0.22), transparent 60%),
+                radial-gradient(900px 620px at 90% -4%, rgba(245, 163, 91, 0.12), transparent 56%),
+                radial-gradient(900px 700px at 50% 112%, rgba(16, 185, 129, 0.07), transparent 60%),
+                linear-gradient(160deg, #070b16 0%, #0b1226 55%, #070b16 100%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button, input, select, textarea { font: inherit; }
+        button { color: inherit; }
+
+        :focus-visible {
+            outline: 2px solid rgba(245, 163, 91, 0.7);
+            outline-offset: 2px;
+        }
+
+        .app {
+            width: min(1120px, 100% - 40px);
+            margin: 0 auto;
+            padding: 26px 0 56px;
+        }
+
+        .hidden { display: none !important; }
+
+        /* ===================== BUTTONS ===================== */
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 13px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .btn:active { transform: translateY(1px); }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #ffc98f 0%, #f5a35b 100%);
+            color: #2a1503;
+            box-shadow: 0 12px 28px rgba(245, 163, 91, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 34px rgba(245, 163, 91, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-soft {
+            background: rgba(148, 163, 184, 0.1);
+            border-color: var(--line);
+            color: #dbe4ff;
+        }
+
+        .btn-soft:hover { background: rgba(148, 163, 184, 0.18); }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--line);
+            color: var(--muted);
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(245, 163, 91, 0.42);
+            color: var(--amber-soft);
+        }
+
+        .btn-danger {
+            background: rgba(253, 164, 175, 0.16);
+            border-color: rgba(253, 164, 175, 0.46);
+            color: #fecdd3;
+        }
+
+        .btn-danger:hover {
+            background: rgba(190, 24, 93, 0.42);
+            border-color: rgba(253, 164, 175, 0.72);
+            color: #fff1f2;
+        }
+
+        .btn-danger-ghost {
+            padding: 8px 14px;
+            font-size: 0.76rem;
+            border-radius: 999px;
+            border-color: rgba(253, 164, 175, 0.3);
+            color: var(--danger);
+        }
+
+        .btn-danger-ghost:hover {
+            border-color: rgba(253, 164, 175, 0.6);
+            background: rgba(253, 164, 175, 0.1);
+            color: #fecdd3;
+        }
+
+        /* ===================== TOPBAR ===================== */
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            padding: 4px 4px 22px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            flex: 0 0 auto;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background:
+                radial-gradient(120% 120% at 22% 0%, rgba(245, 163, 91, 0.3), transparent 58%),
+                linear-gradient(160deg, #1b2748 0%, #0b1226 100%);
+            border: 1px solid rgba(245, 163, 91, 0.4);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+        }
+
+        .brand-mark svg { width: 46px; height: 46px; }
+
+        .topnav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(14px);
+        }
+
+        .topnav-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .topnav-tab svg { width: 16px; height: 16px; }
+
+        .topnav-tab:hover { color: var(--amber-soft); }
+
+        .topnav-tab.is-active {
+            border-color: rgba(245, 163, 91, 0.4);
+            background: rgba(245, 163, 91, 0.14);
+            color: var(--amber-soft);
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 1.22rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        h1.name-flash { animation: nameFlash 1.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+        @keyframes nameFlash {
+            0%   { opacity: 0; transform: translateY(12px) scale(0.94); filter: blur(4px); }
+            45%  { opacity: 1; transform: translateY(0) scale(1.02); filter: blur(0); }
+            100% { opacity: 1; transform: none; filter: none; }
+        }
+
+        .brand-text p {
+            margin: 3px 0 0;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .session {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 9px 7px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(14px);
+        }
+
+        .session-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(245, 163, 91, 0.16);
+            font-size: 1.02rem;
+        }
+
+        .session-avatar svg { width: 24px; height: 24px; }
+
+        .session-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+            min-width: 0;
+        }
+
+        .session-name {
+            font-weight: 700;
+            font-size: 0.84rem;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .session-level {
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .session .btn {
+            padding: 7px 12px;
+            font-size: 0.74rem;
+            border-radius: 999px;
+        }
+
+        /* ===================== PANELS ===================== */
+
+        .panel {
+            position: relative;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(20, 30, 54, 0.86), rgba(10, 16, 31, 0.92));
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+        }
+
+        /* ===================== LOGIN ===================== */
+
+        .login-card {
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+            overflow: hidden;
+            animation: cardRise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        @keyframes cardRise {
+            from { opacity: 0; transform: translateY(14px) scale(0.995); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .login-visual {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 22px;
+            padding: 38px 34px 30px;
+            border-right: 1px solid var(--line);
+            background:
+                radial-gradient(120% 100% at 18% 0%, rgba(245, 163, 91, 0.2), transparent 56%),
+                linear-gradient(160deg, rgba(99, 102, 241, 0.18), transparent 68%);
+            overflow: hidden;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(255, 217, 174, 0.78);
+        }
+
+        .visual-title {
+            margin: 0 0 14px;
+            font-size: clamp(1.75rem, 3vw, 2.35rem);
+            line-height: 1.06;
+            letter-spacing: -0.03em;
+            font-weight: 800;
+        }
+
+        .visual-title em {
+            font-style: normal;
+            background: linear-gradient(180deg, #ffe6c4 0%, #f5a35b 78%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .visual-copy {
+            margin: 0 0 20px;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--muted);
+            max-width: 34ch;
+        }
+
+        .visual-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 9px;
+            font-size: 0.84rem;
+            color: #c7d2fe;
+        }
+
+        .visual-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .visual-list .dot {
+            flex: 0 0 auto;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--success);
+            background: rgba(110, 231, 183, 0.12);
+            border: 1px solid rgba(110, 231, 183, 0.2);
+        }
+
+        .visual-cat {
+            width: 200px;
+            margin: 0 auto;
+            display: block;
+            filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.45));
+            animation: catFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes catFloat {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-8px); }
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            padding: 40px 40px 32px;
+        }
+
+        .form-head h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            font-weight: 800;
+        }
+
+        .form-head p {
+            margin: 7px 0 0;
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        .field { margin-top: 20px; }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.69rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .input, select {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: rgba(7, 11, 22, 0.66);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .input::placeholder { color: #64748b; font-weight: 500; }
+
+        .input:focus, select:focus {
+            border-color: rgba(245, 163, 91, 0.55);
+            background: rgba(7, 11, 22, 0.85);
+            box-shadow: 0 0 0 4px rgba(245, 163, 91, 0.12);
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 44px;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%2393a1c4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        select option, select optgroup { background: #0b1226; color: var(--text); }
+
+        .form-error {
+            margin: 14px 0 0;
+            min-height: 20px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .form-notice {
+            margin: 14px 0 0;
+            min-height: 20px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .return-form .form-notice {
+            flex-basis: 100%;
+            margin: 0;
+            min-height: 18px;
+        }
+
+        .login-form .btn-primary { margin-top: 10px; width: 100%; padding: 15px 20px; font-size: 0.97rem; }
+
+        .form-footnote {
+            margin: 14px 0 0;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* ===================== RETURNING PLAYER ===================== */
+
+        .auth-area { display: grid; gap: 16px; }
+
+        .return-card { padding: 20px 24px; }
+
+        .return-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .return-head h2 {
+            margin: 0;
+            font-size: 1.08rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .return-head p {
+            margin: 5px 0 0;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .return-form {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .return-form .input { flex: 1 1 240px; }
+
+        .return-form .btn { flex: 0 0 auto; }
+
+        .return-form .form-error {
+            flex-basis: 100%;
+            margin: 0;
+            min-height: 18px;
+        }
+
+        .return-accounts {
+            flex-basis: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .return-hint {
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+
+        .account-chip {
+            padding: 6px 13px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(148, 163, 184, 0.08);
+            color: #dbe4ff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        .account-chip:hover {
+            border-color: rgba(245, 163, 91, 0.45);
+            background: rgba(245, 163, 91, 0.12);
+            color: var(--amber-soft);
+        }
+
+        /* ===================== PLAY AREA ===================== */
+
+        .play-area { display: block; }
+
+        .play-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 2px 4px 20px;
+        }
+
+        #greeting {
+            margin: 0;
+            font-size: clamp(1.45rem, 2.6vw, 1.95rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .greeting-sub {
+            margin: 7px 0 0;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .level-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 15px;
+            border-radius: 999px;
+            border: 1px solid rgba(245, 163, 91, 0.3);
+            background: rgba(245, 163, 91, 0.1);
+            color: var(--amber-soft);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .level-chip::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--amber);
+            box-shadow: 0 0 10px rgba(245, 163, 91, 0.8);
+        }
+
+        .play-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .game-card { padding: 24px; }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 18px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(7, 11, 22, 0.45);
+            margin-bottom: 18px;
+        }
+
+        .stat { display: flex; flex-direction: column; gap: 2px; }
+        .stat:last-child { align-items: flex-end; text-align: right; }
+
+        .stat-label {
+            font-size: 0.64rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1.15;
+            display: inline-block;
+        }
+
+        .stat-value small {
+            font-size: 0.62em;
+            font-weight: 700;
+            color: var(--muted);
+            margin-left: 1px;
+        }
+
+        #score { color: var(--amber); }
+        #score.bump { animation: scoreBump 0.34s ease; }
+
+        @keyframes scoreBump {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.24); }
+            100% { transform: scale(1); }
+        }
+
+        #timer-box .stat-value { color: #c7d2fe; }
+        #timer-box.is-low .stat-value { color: var(--danger); animation: lowTime 1s ease-in-out infinite; }
+
+        .stat-lives { align-items: center; text-align: center; }
+
+        .lives {
+            display: inline-flex;
+            gap: 3px;
+            font-size: 1.42rem;
+            line-height: 1.1;
+        }
+
+        .lives .heart {
+            color: #fb7185;
+            text-shadow: 0 0 12px rgba(251, 113, 133, 0.45);
+            transition: color 0.25s ease, text-shadow 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .lives .heart.is-lost {
+            color: rgba(148, 163, 184, 0.26);
+            text-shadow: none;
+            opacity: 0.6;
+            transform: scale(0.85);
+        }
+
+        .lives .heart.is-breaking { animation: heartBreak 0.5s ease; }
+
+        @keyframes heartBreak {
+            0%   { transform: scale(1.25); color: #fff; }
+            45%  { transform: scale(1.45) rotate(-10deg); color: #fff; }
+            100% { transform: none; }
+        }
+
+        #lives-box.is-critical .lives { animation: lowTime 1.1s ease-in-out infinite; }
+
+        @keyframes lowTime {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.5; }
+        }
+
+        .account-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 163, 91, 0.22);
+            background: linear-gradient(135deg, rgba(245, 163, 91, 0.1), rgba(99, 102, 241, 0.06));
+        }
+
+        .lv-badge {
+            flex: 0 0 auto;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            line-height: 1;
+            background: linear-gradient(160deg, #ffc98f, #f5a35b 70%, #e08c47);
+            color: #2a1503;
+            box-shadow: 0 8px 18px rgba(245, 163, 91, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .lv-badge .lv-label {
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .lv-badge strong {
+            font-size: 1.12rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .lv-badge.levelup { animation: lvPop 0.6s cubic-bezier(0.2, 1.5, 0.4, 1); }
+
+        @keyframes lvPop {
+            0%   { transform: scale(1); }
+            45%  { transform: scale(1.22) rotate(-4deg); box-shadow: 0 0 0 8px rgba(245, 163, 91, 0.18); }
+            100% { transform: none; }
+        }
+
+        .exp-meter { flex: 1; min-width: 0; }
+
+        .exp-top {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 7px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .exp-top span:last-child {
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            text-transform: none;
+            color: var(--amber-soft);
+            white-space: nowrap;
+        }
+
+        .exp-bar {
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(7, 11, 22, 0.65);
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        .exp-bar span {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ffc98f, #f5a35b 70%, #e08c47);
+            box-shadow: 0 0 12px rgba(245, 163, 91, 0.45);
+            transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .end-account {
+            margin: -12px 0 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .end-levelup {
+            margin: 0 0 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--amber-soft);
+        }
+
+
+        .question {
+            position: relative;
+            min-height: 122px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px 18px;
+            margin-bottom: 18px;
+            border-radius: 18px;
+            border: 1px dashed rgba(148, 163, 184, 0.28);
+            background:
+                radial-gradient(120% 130% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
+                rgba(7, 11, 22, 0.48);
+            font-size: clamp(1.4rem, 3.2vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #f8fafc;
+            line-height: 1.25;
+        }
+
+        .question.pop { animation: questionIn 0.32s ease; }
+
+        @keyframes questionIn {
+            from { opacity: 0.3; transform: translateY(7px) scale(0.99); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .answer-row { display: flex; gap: 12px; }
+
+        #user-answer {
+            flex: 1;
+            min-width: 0;
+            padding: 15px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: rgba(7, 11, 22, 0.66);
+            color: var(--text);
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.02em;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        #user-answer::placeholder { color: #58677f; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.01em; }
+
+        #user-answer:focus {
+            border-color: rgba(245, 163, 91, 0.55);
+            background: rgba(7, 11, 22, 0.85);
+            box-shadow: 0 0 0 4px rgba(245, 163, 91, 0.12);
+        }
+
+        .answer-row .btn-primary {
+            flex: 0 0 auto;
+            padding: 0 26px;
+            font-size: 0.92rem;
+        }
+
+        #message {
+            margin: 14px 0 0;
+            min-height: 22px;
+            font-size: 0.93rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        #message.good { color: var(--success); }
+        #message.bad { color: var(--danger); }
+
+        .round-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .round-actions .btn {
+            padding: 8px 14px;
+            font-size: 0.76rem;
+            border-radius: 10px;
+        }
+
+        /* ===================== ZAKŁADKI (TEMATY) ===================== */
+
+        .topics-card {
+            padding: 26px;
+            animation: cardRise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .topics-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .topics-head h2 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .topics-head p {
+            margin: 7px 0 0;
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+            gap: 12px;
+        }
+
+        .topic-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 18px 18px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: linear-gradient(160deg, rgba(148, 163, 184, 0.09), rgba(7, 11, 22, 0.5));
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .topic-card::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 16px;
+            width: 26px;
+            height: 13px;
+            border-radius: 0 0 6px 6px;
+            background: linear-gradient(180deg, #ffc98f, #f5a35b);
+            opacity: 0.85;
+        }
+
+        .topic-card h3 {
+            margin: 8px 0 0;
+            font-size: 0.96rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .topic-card p {
+            margin: 0;
+            font-size: 0.76rem;
+            line-height: 1.5;
+            color: var(--muted);
+        }
+
+        .topic-card .topic-go {
+            margin-top: 10px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--amber-soft);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(245, 163, 91, 0.5);
+            background: linear-gradient(160deg, rgba(245, 163, 91, 0.12), rgba(7, 11, 22, 0.5));
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .topics-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .topics-foot p {
+            margin: 0;
+            font-size: 0.74rem;
+            color: #64748b;
+        }
+
+        /* ===================== DIALOG ===================== */
+
+        .confirm-dialog {
+            width: min(430px, calc(100vw - 32px));
+            border-radius: 22px;
+            border: 1px solid rgba(253, 164, 175, 0.3);
+            background: linear-gradient(180deg, #141e36, #0a1020);
+            color: var(--text);
+            padding: 26px 26px 22px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .confirm-dialog::backdrop {
+            background: rgba(4, 8, 18, 0.72);
+            backdrop-filter: blur(6px);
+        }
+
+        .confirm-dialog h2 {
+            margin: 0;
+            font-size: 1.22rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .confirm-dialog p {
+            margin: 10px 0 0;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .confirm-dialog strong { color: var(--text); }
+
+        .confirm-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .play-head .level-chip {
+            white-space: normal;
+            line-height: 1.35;
+            text-align: left;
+        }
+
+        /* ===================== END SCREEN ===================== */
+
+        .end-screen {
+            padding: 12px 6px 8px;
+            text-align: center;
+        }
+
+        .end-eyebrow {
+            margin: 0;
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(255, 217, 174, 0.78);
+        }
+
+        .end-screen h2 {
+            margin: 10px 0 6px;
+            font-size: 1.85rem;
+            letter-spacing: -0.02em;
+            font-weight: 800;
+        }
+
+        .end-player {
+            margin: 0 0 18px;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .final-score {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 9px;
+            margin: 0 0 24px;
+        }
+
+        .final-score strong {
+            font-size: clamp(3rem, 8vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--amber);
+            letter-spacing: -0.04em;
+        }
+
+        .final-score span {
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .end-actions {
+            display: grid;
+            gap: 10px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* ===================== NOTEPAD ===================== */
+
+        .pad-card { padding: 22px; }
+
+        .pad-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .pad-head h2 {
+            margin: 0;
+            font-size: 1.06rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .pad-head p {
+            margin: 4px 0 0;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .pad-toolbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .pad-toolbar .btn {
+            padding: 8px 13px;
+            font-size: 0.77rem;
+            border-radius: 10px;
+        }
+
+        .pad-expand {
+            flex: 0 0 auto;
+            padding: 8px 13px;
+            font-size: 0.76rem;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .pad-toolbar .btn.is-active {
+            border-color: rgba(245, 163, 91, 0.5);
+            background: rgba(245, 163, 91, 0.14);
+            color: var(--amber-soft);
+        }
+
+        .notepad-container {
+            position: relative;
+            height: 300px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background:
+                radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.05), transparent 55%),
+                linear-gradient(160deg, #1a3a32 0%, #132b25 60%, #102420 100%);
+            box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .notepad-container canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        textarea.text-notes {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            color: #eef7f0;
+            resize: none;
+            padding: 16px;
+            outline: none;
+            font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+            font-size: 1rem;
+            line-height: 1.55;
+            font-weight: 600;
+        }
+
+        textarea.text-notes::placeholder { color: rgba(238, 247, 240, 0.32); }
+
+        .pad-card.is-expanded {
+            position: fixed;
+            inset: clamp(10px, 2.4vw, 28px);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            padding: 22px;
+            background: linear-gradient(180deg, rgba(20, 30, 54, 0.99), rgba(9, 14, 28, 1));
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+        }
+
+        .pad-card.is-expanded::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: rgba(3, 6, 13, 0.74);
+            backdrop-filter: blur(5px);
+        }
+
+        .pad-card.is-expanded .notepad-container {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: 160px;
+        }
+
+        body.pad-expanded { overflow: hidden; }
+
+        /* ===================== RANKING ===================== */
+
+        .ranking-card {
+            padding: 26px;
+            animation: cardRise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .ranking-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .ranking-head h2 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .ranking-head p {
+            margin: 7px 0 0;
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        .level-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .level-tab {
+            padding: 8px 13px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(148, 163, 184, 0.06);
+            color: var(--muted);
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .level-tab:hover { color: var(--amber-soft); }
+
+        .level-tab.is-active {
+            border-color: rgba(245, 163, 91, 0.5);
+            background: rgba(245, 163, 91, 0.14);
+            color: var(--amber-soft);
+        }
+
+        .ranking-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .ranking-row {
+            display: grid;
+            grid-template-columns: 40px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: rgba(7, 11, 22, 0.42);
+        }
+
+        .ranking-row.is-me {
+            border-color: rgba(245, 163, 91, 0.45);
+            background: rgba(245, 163, 91, 0.09);
+        }
+
+        .rank-pos {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .ranking-row:nth-child(1) .rank-pos {
+            background: linear-gradient(160deg, #ffe6a8, #e7b04c);
+            color: #3a2402;
+        }
+
+        .ranking-row:nth-child(2) .rank-pos {
+            background: linear-gradient(160deg, #eef2ff, #aab6cf);
+            color: #1f2937;
+        }
+
+        .ranking-row:nth-child(3) .rank-pos {
+            background: linear-gradient(160deg, #f0c9a4, #c08552);
+            color: #2f1a08;
+        }
+
+        .rank-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            font-size: 0.94rem;
+            font-weight: 700;
+        }
+
+        .rank-name .rank-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rank-level {
+            flex: 0 0 auto;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.18);
+            color: #c7d2fe;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .rank-you {
+            flex: 0 0 auto;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(245, 163, 91, 0.2);
+            color: var(--amber-soft);
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .rank-score {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: var(--amber);
+            white-space: nowrap;
+        }
+
+        .rank-score small {
+            margin-left: 3px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+        }
+
+        .ranking-empty {
+            margin: 0;
+            padding: 30px 12px;
+            border-radius: 16px;
+            border: 1px dashed rgba(148, 163, 184, 0.24);
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+
+        /* ===================== RESPONSIVE ===================== */
+
+        @media (max-width: 980px) {
+            .login-card { grid-template-columns: 1fr; }
+            .login-visual {
+                flex-direction: row;
+                align-items: center;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+                padding: 26px 28px;
+                gap: 18px;
+            }
+            .login-visual > div:first-child { flex: 1; }
+            .visual-copy, .visual-list { display: none; }
+            .visual-title { margin-bottom: 0; }
+            .visual-cat { width: 132px; margin: 0; flex: 0 0 auto; order: 2; }
+            .login-form { padding: 30px 28px 28px; }
+            .play-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .app { width: calc(100% - 28px); padding-top: 18px; }
+            .topbar { padding-bottom: 18px; gap: 12px; }
+            .brand-mark { width: 46px; height: 46px; }
+            .brand-mark svg { width: 38px; height: 38px; }
+            .brand-text h1 { font-size: 1.05rem; }
+            .brand-text p { font-size: 0.6rem; letter-spacing: 0.18em; }
+            .topnav { order: 3; flex: 1 0 100%; justify-content: center; }
+            .session { padding: 6px 8px; gap: 9px; }
+            .session-name { max-width: 110px; }
+            .session .btn { padding: 6px 10px; font-size: 0.7rem; }
+            .login-visual { padding: 22px; gap: 12px; }
+            .visual-cat { width: 104px; }
+            .visual-title { font-size: 1.5rem; }
+            .login-form { padding: 24px 22px 24px; }
+            .form-head h2 { font-size: 1.3rem; }
+            .return-card { padding: 18px 20px; }
+            .game-card { padding: 18px; }
+            .pad-card { padding: 18px; }
+            .question { min-height: 104px; font-size: 1.35rem; }
+            .answer-row { flex-direction: column; }
+            .answer-row .btn-primary { width: 100%; padding: 14px 20px; }
+            .notepad-container { height: 250px; }
+            .pad-card.is-expanded { inset: 8px; padding: 16px; border-radius: 20px; }
+            .play-head { align-items: flex-start; }
+            .ranking-card { padding: 20px; }
+            .topics-card { padding: 20px; }
+            .topic-grid { grid-template-columns: 1fr; }
+            .ranking-row { grid-template-columns: 34px minmax(0, 1fr) auto; padding: 10px 12px; gap: 10px; }
+            .rank-pos { width: 30px; height: 30px; font-size: 0.78rem; }
+            .rank-name { font-size: 0.88rem; }
+            .account-strip { gap: 11px; padding: 11px 13px; }
+            .lv-badge { width: 42px; height: 42px; border-radius: 12px; }
+            .stats { gap: 8px; padding: 11px 13px; }
+            .stat-label { font-size: 0.56rem; letter-spacing: 0.12em; }
+            .stat-value { font-size: 1.25rem; }
+            .lives { font-size: 1.2rem; gap: 1px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .visual-cat, .question.pop, .login-card, #score.bump, .lv-badge.levelup,
+            .lives .heart.is-breaking, #lives-box.is-critical .lives { animation: none !important; }
+        }
+
+        /* ===================== ANIMACJA POWITALNA ===================== */
+
+        body.intro-open { overflow: hidden; height: 100vh; }
+
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6px, 1.6vh, 18px);
+            padding: 24px;
+            box-sizing: border-box;
+            cursor: pointer;
+            overflow: hidden;
+            background:
+                radial-gradient(120% 90% at 50% 32%, rgba(99, 102, 241, 0.30), transparent 58%),
+                radial-gradient(80% 60% at 72% 76%, rgba(16, 185, 129, 0.10), transparent 62%),
+                linear-gradient(160deg, #060a16 0%, #101a3a 55%, #060a16 100%);
+            animation: overlayIn 0.5s ease-out both;
+            transition: opacity 0.85s ease, transform 0.85s ease, visibility 0.85s;
+        }
+
+        .intro-overlay.is-gone {
+            opacity: 0;
+            transform: scale(1.04);
+            visibility: hidden;
+        }
+
+        @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .intro-glyphs { position: absolute; inset: 0; pointer-events: none; }
+
+        .intro-glyphs span {
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(1.6rem, 4vw, 2.9rem);
+            color: rgba(199, 210, 254, 0.14);
+            animation: glyphFloat 7s ease-in-out infinite;
+            animation-delay: var(--d, 0s);
+            user-select: none;
+        }
+
+        @keyframes glyphFloat {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%      { transform: translateY(-16px) rotate(4deg); }
+        }
+
+        .intro-scene {
+            position: relative;
+            z-index: 1;
+            width: min(92vw, 900px);
+            height: min(54vh, 500px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-scene svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.5));
+        }
+
+        /* --- tablica i kreda --- */
+
+        .intro-scene .chalk {
+            font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+            fill: #eaf5ec;
+            opacity: 0;
+        }
+
+        .intro-scene .c-task  { font-size: 28px; letter-spacing: 2px; fill: #d8efe0; }
+        .intro-scene .c-eq    { font-size: 62px; }
+        .intro-scene .c-q     { font-size: 64px; }
+        .intro-scene .c-line2 { font-size: 29px; fill: #d3ecdd; }
+
+        .intro-scene.writing .chalk {
+            animation: chalkIn 0.5s ease-out forwards;
+            animation-delay: var(--d, 0s);
+        }
+
+        @keyframes chalkIn {
+            from { opacity: 0; filter: blur(4px); transform: translateY(6px); }
+            to   { opacity: 1; filter: blur(0.3px); transform: none; }
+        }
+
+        .intro-scene .underline {
+            fill: none;
+            stroke: #eaf5ec;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 360;
+            stroke-dashoffset: 360;
+        }
+
+        .intro-scene.writing .underline {
+            animation: drawLine 0.9s 0.85s ease-out forwards;
+        }
+
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+        .intro-scene .check {
+            fill: none;
+            stroke: #bff0d0;
+            stroke-width: 7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 120;
+            stroke-dashoffset: 120;
+            opacity: 0;
+        }
+
+        .intro-scene.solved .check {
+            opacity: 1;
+            animation: drawLine 0.5s 0.15s ease-out forwards;
+        }
+
+        .intro-scene.solved .c-q { opacity: 0 !important; }
+
+        .intro-scene .answer {
+            font-family: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+            font-size: 62px;
+            fill: #f7ffe9;
+            opacity: 0;
+        }
+
+        .intro-scene.solved .answer {
+            animation: answerIn 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+        }
+
+        @keyframes answerIn {
+            0%   { opacity: 0; transform: translateY(10px) scale(0.75); }
+            70%  { opacity: 1; transform: translateY(-2px) scale(1.06); }
+            100% { opacity: 1; transform: none; }
+        }
+
+        .intro-scene .sparkles .s { fill: #fff3c4; opacity: 0; transform-box: view-box; }
+        .intro-scene .sparkles .s1 { transform-origin: 596px 190px; }
+        .intro-scene .sparkles .s2 { transform-origin: 654px 210px; }
+        .intro-scene .sparkles .s3 { transform-origin: 560px 200px; }
+
+        .intro-scene.solved .s1 { animation: sparkPop 0.7s 0.25s ease-out forwards; }
+        .intro-scene.solved .s2 { animation: sparkPop 0.7s 0.45s ease-out forwards; }
+        .intro-scene.solved .s3 { animation: sparkPop 0.7s 0.6s ease-out forwards; }
+
+        @keyframes sparkPop {
+            0%   { opacity: 0; transform: scale(0.3) rotate(-25deg); }
+            60%  { opacity: 1; transform: scale(1.2) rotate(6deg); }
+            100% { opacity: 0.9; transform: scale(1) rotate(0deg); }
+        }
+
+        /* --- kot --- */
+
+        .intro-scene .cat-head {
+            transform-box: view-box;
+            transform-origin: 742px 336px;
+            transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .intro-scene.look-back .cat-head {
+            transform: rotate(20deg) translate(12px, -4px);
+        }
+
+        .intro-scene .eyes {
+            transform-box: view-box;
+            transform-origin: 742px 246px;
+            animation: blink 5.4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 92%, 100% { transform: scaleY(1); }
+            95%, 97%      { transform: scaleY(0.08); }
+        }
+
+        .intro-scene .pupils {
+            transform-box: view-box;
+            transform-origin: 742px 248px;
+            transform: translateX(-4px);
+            transition: transform 0.35s ease;
+        }
+
+        .intro-scene.look-back .pupils { transform: translate(10px, -2px); }
+
+        .intro-scene.look-back .eyes {
+            animation: none;
+            transform: scale(1.06);
+        }
+
+        .intro-scene .ear {
+            transform-box: view-box;
+            transition: transform 0.45s ease;
+        }
+
+        .intro-scene .ear-l { transform-origin: 700px 200px; }
+        .intro-scene .ear-r { transform-origin: 784px 200px; }
+
+        .intro-scene.look-back .ear-l { transform: rotate(-7deg); }
+        .intro-scene.look-back .ear-r { transform: rotate(7deg); }
+
+        .intro-scene .cat-tail {
+            transform-box: view-box;
+            transform-origin: 812px 450px;
+            animation: tailSwish 3.6s ease-in-out infinite;
+        }
+
+        @keyframes tailSwish {
+            0%, 100% { transform: rotate(0deg); }
+            50%      { transform: rotate(-5deg); }
+        }
+
+        .intro-scene.look-back .cat-tail { animation: tailFlick 0.8s ease-in-out; }
+
+        @keyframes tailFlick {
+            0%, 100% { transform: rotate(0deg); }
+            35%      { transform: rotate(9deg); }
+            70%      { transform: rotate(-4deg); }
+        }
+
+        .intro-scene .cat-body {
+            transform-box: view-box;
+            transition: transform 0.5s ease;
+        }
+
+        .intro-scene.look-back .cat-body { transform: translateY(-4px); }
+
+        .intro-scene .arm-board {
+            transform-box: view-box;
+            transform-origin: 682px 360px;
+        }
+
+        .intro-scene.writing .arm-board {
+            animation: writeWobble 0.42s ease-in-out infinite alternate;
+        }
+
+        @keyframes writeWobble {
+            from { transform: rotate(-2.2deg); }
+            to   { transform: rotate(2.6deg); }
+        }
+
+        .intro-scene.solved .arm-board { animation: none; }
+
+        .intro-scene .dust .d { fill: #ffffff; opacity: 0; }
+
+        .intro-scene.writing .dust .d { animation: dustUp 1.1s ease-out infinite; }
+        .intro-scene.writing .dust .d1 { animation-delay: 0s; }
+        .intro-scene.writing .dust .d2 { animation-delay: 0.35s; }
+        .intro-scene.writing .dust .d3 { animation-delay: 0.7s; }
+
+        .intro-scene.solved .dust .d { animation: none; opacity: 0; }
+
+        @keyframes dustUp {
+            0%   { opacity: 0; transform: translate(0, 0) scale(0.6); }
+            30%  { opacity: 0.65; }
+            100% { opacity: 0; transform: translate(-12px, -28px) scale(1); }
+        }
+
+        .intro-scene .glint { transform-box: view-box; }
+
+        .intro-scene.solved .glint {
+            animation: glintPing 0.9s 0.2s ease-out;
+        }
+
+        @keyframes glintPing {
+            0%   { opacity: 0.6; transform: translateX(0); }
+            40%  { opacity: 1; transform: translateX(7px); }
+            100% { opacity: 0.6; transform: translateX(0); }
+        }
+
+        .intro-scene .cat-qmark {
+            opacity: 0;
+            transform-box: view-box;
+            transform-origin: 880px 190px;
+            transform: scale(0.4) rotate(-18deg);
+            transition: opacity 0.25s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .intro-scene.look-back .cat-qmark {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* --- nazwa witryny --- */
+
+        .intro-title-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(4px, 1vh, 10px);
+            min-height: clamp(96px, 15vh, 148px);
+            text-align: center;
+        }
+
+        .intro-name {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.4rem, 8vw, 5rem);
+            line-height: 1.04;
+            letter-spacing: 0.01em;
+        }
+
+        .intro-name .letter {
+            display: inline-block;
+            opacity: 0;
+            background: linear-gradient(180deg, #ffffff 8%, #ffe3b6 52%, #f5a35b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 8px 22px rgba(245, 163, 91, 0.35));
+        }
+
+        .intro-name .space { width: 0.34em; }
+
+        .intro-name.show .letter {
+            animation: letterIn 0.65s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+            animation-delay: calc(var(--i) * 65ms);
+        }
+
+        @keyframes letterIn {
+            0%   { opacity: 0; transform: translateY(34px) rotate(7deg) scale(0.7); }
+            60%  { opacity: 1; }
+            100% { opacity: 1; transform: none; }
+        }
+
+        .intro-tagline {
+            font-size: clamp(0.68rem, 1.6vw, 0.92rem);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #c7d2fe;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .intro-tagline.show {
+            opacity: 0.85;
+            transform: none;
+            transition-delay: 1.15s;
+        }
+
+        .intro-skip {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.45);
+            animation: skipPulse 2.4s ease-in-out infinite;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @keyframes skipPulse {
+            0%, 100% { opacity: 0.35; }
+            50%      { opacity: 0.75; }
+        }
+
+        @media (max-width: 640px) {
+            .intro-scene { height: min(46vh, 400px); }
+            .intro-title-wrap { min-height: 92px; }
+            .intro-tagline { letter-spacing: 0.25em; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .intro-overlay { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===================== ANIMACJA POWITALNA ===================== -->
+<div class="intro-overlay" id="intro-overlay" role="dialog" aria-label="Animacja powitalna">
+    <div class="intro-glyphs" aria-hidden="true">
+        <span style="--x: 8%;  --y: 22%; --d: 0s;">π</span>
+        <span style="--x: 88%; --y: 16%; --d: 1.2s;">∑</span>
+        <span style="--x: 13%; --y: 74%; --d: 2.1s;">√</span>
+        <span style="--x: 83%; --y: 70%; --d: 0.7s;">∞</span>
+        <span style="--x: 71%; --y: 89%; --d: 1.7s;">∫</span>
+        <span style="--x: 26%; --y: 11%; --d: 2.6s;">÷</span>
+    </div>
+
+    <div class="intro-scene" id="intro-scene" aria-hidden="true">
+        <svg viewBox="0 0 960 540" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#b07a44"/>
+                    <stop offset="1" stop-color="#7a4c26"/>
+                </linearGradient>
+                <linearGradient id="board" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#2f5f50"/>
+                    <stop offset="1" stop-color="#1c3b33"/>
+                </linearGradient>
+                <radialGradient id="floorGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0" stop-color="rgba(255, 214, 153, 0.20)"/>
+                    <stop offset="1" stop-color="rgba(255, 214, 153, 0)"/>
+                </radialGradient>
+                <filter id="qGlow" x="-60%" y="-60%" width="220%" height="220%">
+                    <feGaussianBlur stdDeviation="5" result="blur"/>
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <ellipse cx="480" cy="472" rx="430" ry="118" fill="url(#floorGlow)"/>
+
+            <!-- nogi tablicy -->
+            <rect x="150" y="392" width="22" height="80" rx="8" fill="#5d3a1d"/>
+            <rect x="588" y="392" width="22" height="80" rx="8" fill="#5d3a1d"/>
+
+            <!-- tablica -->
+            <g class="board">
+                <rect x="88" y="52" width="584" height="346" rx="16" fill="url(#wood)"/>
+                <rect x="106" y="70" width="548" height="310" rx="8" fill="url(#board)"/>
+                <ellipse cx="300" cy="160" rx="150" ry="55" fill="#ffffff" opacity="0.03"/>
+                <ellipse cx="520" cy="330" rx="120" ry="42" fill="#ffffff" opacity="0.025"/>
+
+                <g class="chalk-layer">
+                    <text class="chalk c-task" x="140" y="152" style="--d: 0.15s;">Zadanie:</text>
+                    <text class="chalk c-eq" x="248" y="258" style="--d: 0.45s;">7 × 8 =</text>
+                    <text class="chalk c-q" x="508" y="256" style="--d: 1.05s;">?</text>
+                    <text class="answer" x="492" y="258">56</text>
+                    <path class="check" d="M 590 226 l 18 24 l 40 -54"/>
+                    <path class="underline" d="M 236 284 C 330 298 470 294 566 282"/>
+                    <text class="chalk c-line2" x="146" y="352" style="--d: 1.3s;">(a + b)² = a² + 2ab + b²</text>
+                    <g class="sparkles">
+                        <path class="s s1" d="M 596 168 l 5 12 l 12 5 l -12 5 l -5 12 l -5 -12 l -12 -5 l 12 -5 z"/>
+                        <path class="s s2" d="M 654 196 l 4 9 l 9 4 l -9 4 l -4 9 l -4 -9 l -9 -4 l 9 -4 z"/>
+                        <path class="s s3" d="M 560 196 l 3 7 l 7 3 l -7 3 l -3 7 l -3 -7 l -7 -3 l 7 -3 z"/>
+                    </g>
+                </g>
+
+                <rect x="104" y="388" width="552" height="14" rx="7" fill="#8a5a2f"/>
+                <rect x="140" y="386" width="54" height="10" rx="5" fill="#f4f1e8"/>
+                <rect x="210" y="386" width="38" height="10" rx="5" fill="#e9c46a"/>
+            </g>
+
+            <path d="M 60 480 H 900" stroke="#ffffff" stroke-width="2" opacity="0.05"/>
+
+            <!-- kot -->
+            <g class="cat">
+                <ellipse cx="744" cy="486" rx="118" ry="16" fill="#000000" opacity="0.38"/>
+
+                <g class="cat-tail">
+                    <path d="M 812 450 C 878 462 918 406 888 356 C 878 340 858 334 846 348"
+                          fill="none" stroke="#f5a35b" stroke-width="28" stroke-linecap="round"/>
+                    <circle cx="848" cy="352" r="14" fill="#ffecd6"/>
+                </g>
+
+                <path class="cat-body"
+                      d="M 664 414 C 664 350 690 312 742 312 C 794 312 820 350 820 414 C 820 452 790 474 742 474 C 694 474 664 452 664 414 Z"
+                      fill="#f5a35b"/>
+                <ellipse cx="742" cy="418" rx="42" ry="50" fill="#ffecd6"/>
+                <ellipse cx="742" cy="356" rx="46" ry="34" fill="#ffecd6"/>
+                <g stroke="#e08c47" stroke-width="9" stroke-linecap="round" opacity="0.9" fill="none">
+                    <path d="M 670 356 q 18 10 32 8"/>
+                    <path d="M 816 356 q -18 10 -32 8"/>
+                    <path d="M 676 394 q 14 8 26 7"/>
+                    <path d="M 810 394 q -14 8 -26 7"/>
+                </g>
+                <rect x="694" y="446" width="44" height="28" rx="14" fill="#f5a35b"/>
+                <rect x="746" y="446" width="44" height="28" rx="14" fill="#f5a35b"/>
+                <ellipse cx="716" cy="470" rx="18" ry="10" fill="#ffecd6"/>
+                <ellipse cx="768" cy="470" rx="18" ry="10" fill="#ffecd6"/>
+
+                <!-- prawa łapka w dół -->
+                <path d="M 812 360 C 832 384 836 410 830 432" fill="none" stroke="#f5a35b" stroke-width="26" stroke-linecap="round"/>
+                <ellipse cx="830" cy="440" rx="16" ry="12" fill="#ffecd6"/>
+
+                <!-- łapka pisząca kredą -->
+                <g class="arm-board">
+                    <path d="M 682 360 C 654 334 634 302 626 268" fill="none" stroke="#f5a35b" stroke-width="26" stroke-linecap="round"/>
+                    <circle cx="626" cy="262" r="16" fill="#ffecd6"/>
+                    <rect x="598" y="232" width="30" height="9" rx="4" fill="#fff9ec" transform="rotate(-40 613 237)"/>
+                </g>
+                <g class="dust">
+                    <circle class="d d1" cx="606" cy="238" r="4"/>
+                    <circle class="d d2" cx="596" cy="250" r="3"/>
+                    <circle class="d d3" cx="616" cy="226" r="2.5"/>
+                </g>
+
+                <g class="cat-head">
+                    <g class="ear ear-l">
+                        <path d="M 672 208 L 660 140 Q 658 128 670 134 L 722 168 Z" fill="#f5a35b"/>
+                        <path d="M 679 198 L 671 154 L 708 175 Z" fill="#f3aaa0"/>
+                    </g>
+                    <g class="ear ear-r">
+                        <path d="M 812 208 L 824 140 Q 826 128 814 134 L 762 168 Z" fill="#f5a35b"/>
+                        <path d="M 805 198 L 813 154 L 776 175 Z" fill="#f3aaa0"/>
+                    </g>
+
+                    <path d="M 664 256 C 664 198 696 172 742 172 C 788 172 820 198 820 256 C 820 310 790 334 742 334 C 694 334 664 310 664 256 Z"
+                          fill="#f5a35b"/>
+                    <g stroke="#e08c47" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.9">
+                        <path d="M 742 180 v 20"/>
+                        <path d="M 718 184 l -7 19"/>
+                        <path d="M 766 184 l 7 19"/>
+                    </g>
+
+                    <ellipse cx="714" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <ellipse cx="770" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <path d="M 742 268 L 730 277 L 742 288 L 754 277 Z" fill="#ef8f93"/>
+                    <g stroke="#6b4a33" stroke-width="4.5" stroke-linecap="round" fill="none">
+                        <path d="M 742 288 q -11 12 -22 5"/>
+                        <path d="M 742 288 q 11 12 22 5"/>
+                    </g>
+                    <g stroke="#fff6ea" stroke-width="3.4" stroke-linecap="round" opacity="0.85">
+                        <path d="M 692 280 L 648 270"/>
+                        <path d="M 692 290 L 644 292"/>
+                        <path d="M 692 300 L 652 312"/>
+                        <path d="M 792 280 L 836 270"/>
+                        <path d="M 792 290 L 840 292"/>
+                        <path d="M 792 300 L 832 312"/>
+                    </g>
+
+                    <g class="eyes">
+                        <ellipse cx="708" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <ellipse cx="776" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <g class="pupils">
+                            <circle cx="708" cy="248" r="14" fill="#79cf9f"/>
+                            <circle cx="776" cy="248" r="14" fill="#79cf9f"/>
+                            <ellipse cx="708" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                            <ellipse cx="776" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                            <circle cx="702" cy="240" r="4" fill="#ffffff"/>
+                            <circle cx="770" cy="240" r="4" fill="#ffffff"/>
+                        </g>
+                    </g>
+
+                    <g class="glasses" fill="none" stroke="#26313f" stroke-width="6.5">
+                        <circle cx="708" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <circle cx="776" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <path d="M 739 240 q 3 -5 6 0" stroke-linecap="round"/>
+                        <path d="M 677 236 L 660 230" stroke-linecap="round"/>
+                        <path d="M 807 236 L 824 230" stroke-linecap="round"/>
+                    </g>
+                    <g class="glint" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6">
+                        <path d="M 694 232 L 706 220"/>
+                        <path d="M 762 232 L 774 220"/>
+                    </g>
+                </g>
+
+                <g class="cat-qmark" filter="url(#qGlow)">
+                    <text x="872" y="190" font-size="76" font-weight="800" fill="#ffe9b0"
+                          font-family="'Segoe UI', system-ui, sans-serif">?</text>
+                    <path d="M 846 148 l 4 9 l 9 4 l -9 4 l -4 9 l -4 -9 l -9 -4 l 9 -4 z" fill="#ffe9b0" opacity="0.8"/>
+                    <path d="M 916 214 l 3 7 l 7 3 l -7 3 l -3 7 l -3 -7 l -7 -3 l 7 -3 z" fill="#ffe9b0" opacity="0.7"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div class="intro-title-wrap">
+        <div class="intro-name" id="intro-name" aria-hidden="true"></div>
+        <div class="intro-tagline" id="intro-tagline">Matematyka z pazurem</div>
+    </div>
+
+    <div class="intro-skip">Kliknij, aby pominąć</div>
+</div>
+
+<div class="app">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+                <svg viewBox="634 112 228 240">
+                    <path d="M 672 208 L 660 140 Q 658 128 670 134 L 722 168 Z" fill="#f5a35b"/>
+                    <path d="M 679 198 L 671 154 L 708 175 Z" fill="#f3aaa0"/>
+                    <path d="M 812 208 L 824 140 Q 826 128 814 134 L 762 168 Z" fill="#f5a35b"/>
+                    <path d="M 805 198 L 813 154 L 776 175 Z" fill="#f3aaa0"/>
+                    <path d="M 664 256 C 664 198 696 172 742 172 C 788 172 820 198 820 256 C 820 310 790 334 742 334 C 694 334 664 310 664 256 Z" fill="#f5a35b"/>
+                    <g stroke="#e08c47" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.9">
+                        <path d="M 742 180 v 20"/>
+                        <path d="M 718 184 l -7 19"/>
+                        <path d="M 766 184 l 7 19"/>
+                    </g>
+                    <ellipse cx="714" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <ellipse cx="770" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <path d="M 742 268 L 730 277 L 742 288 L 754 277 Z" fill="#ef8f93"/>
+                    <g stroke="#6b4a33" stroke-width="4.5" stroke-linecap="round" fill="none">
+                        <path d="M 742 288 q -11 12 -22 5"/>
+                        <path d="M 742 288 q 11 12 22 5"/>
+                    </g>
+                    <g stroke="#fff6ea" stroke-width="3.4" stroke-linecap="round" opacity="0.85">
+                        <path d="M 692 280 L 648 270"/>
+                        <path d="M 692 290 L 644 292"/>
+                        <path d="M 692 300 L 652 312"/>
+                        <path d="M 792 280 L 836 270"/>
+                        <path d="M 792 290 L 840 292"/>
+                        <path d="M 792 300 L 832 312"/>
+                    </g>
+                    <g>
+                        <ellipse cx="708" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <ellipse cx="776" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <circle cx="708" cy="248" r="14" fill="#79cf9f"/>
+                        <circle cx="776" cy="248" r="14" fill="#79cf9f"/>
+                        <ellipse cx="708" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                        <ellipse cx="776" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                        <circle cx="702" cy="240" r="4" fill="#ffffff"/>
+                        <circle cx="770" cy="240" r="4" fill="#ffffff"/>
+                    </g>
+                    <g fill="none" stroke="#26313f" stroke-width="6.5">
+                        <circle cx="708" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <circle cx="776" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <path d="M 739 240 q 3 -5 6 0" stroke-linecap="round"/>
+                        <path d="M 677 236 L 660 230" stroke-linecap="round"/>
+                        <path d="M 807 236 L 824 230" stroke-linecap="round"/>
+                    </g>
+                    <g stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6">
+                        <path d="M 694 232 L 706 220"/>
+                        <path d="M 762 232 L 774 220"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>MathMaster Pro</h1>
+                <p>Akademia matematyki</p>
+            </div>
+        </div>
+
+        <nav class="topnav" role="tablist" aria-label="Widoki strony">
+            <button type="button" class="topnav-tab is-active" id="tab-play" role="tab"
+                    aria-selected="true" aria-controls="play-area" onclick="setView('play')">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="5" width="16" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/>
+                </svg>
+                Gra
+            </button>
+            <button type="button" class="topnav-tab" id="tab-ranking" role="tab"
+                    aria-selected="false" aria-controls="ranking-screen" onclick="setView('ranking')">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 4h10v16.5l-5-3.3-5 3.3z" fill="none" stroke="currentColor"
+                          stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+                Ranking
+            </button>
+        </nav>
+
+        <div class="session hidden" id="session">
+            <div class="session-avatar" aria-hidden="true">
+                <svg viewBox="0 0 32 32">
+                    <path d="M6 13 L4.5 4.5 Q4.3 3 5.8 4 L13 8.5 Z" fill="#f5a35b"/>
+                    <path d="M26 13 L27.5 4.5 Q27.7 3 26.2 4 L19 8.5 Z" fill="#f5a35b"/>
+                    <path d="M16 7.5 C8.5 7.5 5.5 13 5.5 18.5 C5.5 24.3 10 28 16 28 C22 28 26.5 24.3 26.5 18.5 C26.5 13 23.5 7.5 16 7.5 Z" fill="#f5a35b"/>
+                    <circle cx="11.5" cy="17.5" r="3.6" fill="none" stroke="#26313f" stroke-width="1.5"/>
+                    <circle cx="20.5" cy="17.5" r="3.6" fill="none" stroke="#26313f" stroke-width="1.5"/>
+                    <circle cx="11.5" cy="17.5" r="1.1" fill="#1f2937"/>
+                    <circle cx="20.5" cy="17.5" r="1.1" fill="#1f2937"/>
+                    <path d="M16 21.2 l-1.4 1.1 1.4 1 1.4 -1 z" fill="#ef8f93"/>
+                </svg>
+            </div>
+            <div class="session-meta">
+                <span class="session-name" id="session-name">—</span>
+                <span class="session-level" id="session-level">—</span>
+            </div>
+            <button type="button" class="btn btn-ghost" onclick="logoutPlayer()">Zmień gracza</button>
+        </div>
+    </header>
+
+    <!-- LOGOWANIE / REJESTRACJA -->
+    <div class="auth-area" id="auth-area">
+    <section class="panel login-card" id="login-screen" aria-labelledby="login-title">
+        <div class="login-visual">
+            <div>
+                <p class="eyebrow">Kocury w matmę</p>
+                <h2 class="visual-title">Zanim zaczniemy…<br><em>poznajmy się.</em></h2>
+                <p class="visual-copy">Załóż konto kociego matematyka, wybierz klasę, a potem temat z podstawy programowej. Zdobywaj EXP i pnij się w rankingu.</p>
+                <ul class="visual-list">
+                    <li><span class="dot" aria-hidden="true">✓</span> Poprawna odpowiedź: +10 EXP</li>
+                    <li><span class="dot" aria-hidden="true">✓</span> 3 życia w każdej rundzie</li>
+                    <li><span class="dot" aria-hidden="true">✓</span> Zakładki tematyczne i ranking klas</li>
+                    <li><span class="dot" aria-hidden="true">✓</span> Brudnopis zawsze pod ręką</li>
+                </ul>
+            </div>
+            <svg class="visual-cat" viewBox="634 112 228 240" aria-hidden="true">
+                <g>
+                    <path d="M 672 208 L 660 140 Q 658 128 670 134 L 722 168 Z" fill="#f5a35b"/>
+                    <path d="M 679 198 L 671 154 L 708 175 Z" fill="#f3aaa0"/>
+                    <path d="M 812 208 L 824 140 Q 826 128 814 134 L 762 168 Z" fill="#f5a35b"/>
+                    <path d="M 805 198 L 813 154 L 776 175 Z" fill="#f3aaa0"/>
+                    <path d="M 664 256 C 664 198 696 172 742 172 C 788 172 820 198 820 256 C 820 310 790 334 742 334 C 694 334 664 310 664 256 Z" fill="#f5a35b"/>
+                    <g stroke="#e08c47" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.9">
+                        <path d="M 742 180 v 20"/>
+                        <path d="M 718 184 l -7 19"/>
+                        <path d="M 766 184 l 7 19"/>
+                    </g>
+                    <ellipse cx="714" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <ellipse cx="770" cy="290" rx="30" ry="22" fill="#ffecd6"/>
+                    <path d="M 742 268 L 730 277 L 742 288 L 754 277 Z" fill="#ef8f93"/>
+                    <g stroke="#6b4a33" stroke-width="4.5" stroke-linecap="round" fill="none">
+                        <path d="M 742 288 q -11 12 -22 5"/>
+                        <path d="M 742 288 q 11 12 22 5"/>
+                    </g>
+                    <g stroke="#fff6ea" stroke-width="3.4" stroke-linecap="round" opacity="0.85">
+                        <path d="M 692 280 L 648 270"/>
+                        <path d="M 692 290 L 644 292"/>
+                        <path d="M 692 300 L 652 312"/>
+                        <path d="M 792 280 L 836 270"/>
+                        <path d="M 792 290 L 840 292"/>
+                        <path d="M 792 300 L 832 312"/>
+                    </g>
+                    <g>
+                        <ellipse cx="708" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <ellipse cx="776" cy="246" rx="24" ry="26" fill="#fffdf6"/>
+                        <circle cx="708" cy="248" r="14" fill="#79cf9f"/>
+                        <circle cx="776" cy="248" r="14" fill="#79cf9f"/>
+                        <ellipse cx="708" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                        <ellipse cx="776" cy="248" rx="5.5" ry="12" fill="#1f2937"/>
+                        <circle cx="702" cy="240" r="4" fill="#ffffff"/>
+                        <circle cx="770" cy="240" r="4" fill="#ffffff"/>
+                    </g>
+                    <g fill="none" stroke="#26313f" stroke-width="6.5">
+                        <circle cx="708" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <circle cx="776" cy="245" r="31" fill="rgba(255,255,255,0.06)"/>
+                        <path d="M 739 240 q 3 -5 6 0" stroke-linecap="round"/>
+                        <path d="M 677 236 L 660 230" stroke-linecap="round"/>
+                        <path d="M 807 236 L 824 230" stroke-linecap="round"/>
+                    </g>
+                    <g stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6">
+                        <path d="M 694 232 L 706 220"/>
+                        <path d="M 762 232 L 774 220"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+
+        <form class="login-form" id="login-form" novalidate>
+            <div class="form-head">
+                <h2 id="login-title">Nowy kocur</h2>
+                <p>Załóż konto, zbieraj EXP i pnij się w rankingu.</p>
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="player-name">Twoje imię</label>
+                <input class="input" id="player-name" name="player-name" type="text" maxlength="24"
+                       autocomplete="off" placeholder="np. Zosia">
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="player-password">Hasło</label>
+                <input class="input" id="player-password" name="player-password" type="password"
+                       autocomplete="new-password" placeholder="Minimum 8 znaków">
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="grade-select">Do której klasy chodzisz?</label>
+                <select id="grade-select" name="grade">
+                    <option value="" disabled selected>Wybierz swoją klasę…</option>
+                    <optgroup label="Szkoła podstawowa">
+                        <option value="sp1">1. Klasa SP</option>
+                        <option value="sp2">2. Klasa SP</option>
+                        <option value="sp3">3. Klasa SP</option>
+                        <option value="sp4">4. Klasa SP</option>
+                        <option value="sp5">5. Klasa SP</option>
+                        <option value="sp6">6. Klasa SP</option>
+                        <option value="sp7">7. Klasa SP</option>
+                        <option value="sp8">8. Klasa SP</option>
+                    </optgroup>
+                    <optgroup label="Liceum / technikum">
+                        <option value="liceum1">1. Klasa liceum</option>
+                        <option value="liceum2">2. Klasa liceum</option>
+                        <option value="liceum3">3. Klasa liceum</option>
+                        <option value="liceum4">4. Klasa liceum</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="time-select">Czas rundy</label>
+                <select id="time-select" name="time">
+                    <option value="20">20 sekund</option>
+                    <option value="45" selected>45 sekund</option>
+                    <option value="90">90 sekund</option>
+                    <option value="0">Bez limitu czasu</option>
+                </select>
+            </div>
+
+            <p class="form-error" id="login-error" role="alert"></p>
+            <p class="form-notice hidden" id="login-notice" role="status"></p>
+            <button type="submit" class="btn btn-primary">Utwórz konto i graj <span aria-hidden="true">→</span></button>
+            <p class="form-footnote">Masz już konto? Zaloguj się poniżej.</p>
+        </form>
+    </section>
+
+    <!-- POWRÓT GRACZA -->
+    <section class="panel return-card" id="return-card">
+        <div class="return-head">
+            <div>
+                <h2>Masz już konto?</h2>
+                <p>Zaloguj się imieniem i hasłem — klasa, zakładki i EXP wrócą automatycznie.</p>
+            </div>
+            <button type="button" class="btn btn-soft" id="return-toggle" aria-expanded="false"
+                    aria-controls="return-form" onclick="toggleReturnPanel()">Zaloguj się</button>
+        </div>
+        <form class="return-form hidden" id="return-form" novalidate>
+            <input class="input" id="return-name" name="return-name" type="text" maxlength="24"
+                   autocomplete="off" placeholder="Wpisz imię z konta…" aria-label="Twoje imię">
+            <input class="input" id="return-password" name="return-password" type="password"
+                   autocomplete="current-password" placeholder="Hasło…" aria-label="Twoje hasło">
+            <button type="submit" class="btn btn-primary">Zaloguj się</button>
+            <p class="form-error" id="return-error" role="alert"></p>
+            <div class="return-accounts" id="return-accounts"></div>
+        </form>
+    </section>
+    </div>
+
+    <!-- GRA -->
+    <section class="play-area hidden" id="play-area">
+        <div class="play-head">
+            <div>
+                <p class="eyebrow">Runda treningowa</p>
+                <h2 id="greeting">Powodzenia!</h2>
+                <p class="greeting-sub" id="greeting-sub">Każda poprawna odpowiedź to +10 EXP.</p>
+            </div>
+            <span class="level-chip" id="level-chip">Poziom</span>
+        </div>
+
+        <div class="play-grid">
+            <div class="panel game-card">
+                <div id="game-screen">
+                    <div class="account-strip">
+                        <div class="lv-badge" id="hud-level-wrap">
+                            <span class="lv-label">Lv</span>
+                            <strong id="hud-level">1</strong>
+                        </div>
+                        <div class="exp-meter">
+                            <div class="exp-top">
+                                <span>Poziom konta</span>
+                                <span id="hud-exp-text">0 / 100 EXP</span>
+                            </div>
+                            <div class="exp-bar" id="hud-exp-bar" role="progressbar"
+                                 aria-label="Postęp poziomu konta" aria-valuemin="0"
+                                 aria-valuemax="100" aria-valuenow="0">
+                                <span id="hud-exp-fill"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-label">EXP w rundzie</span>
+                            <span class="stat-value" id="score">0</span>
+                        </div>
+                        <div class="stat stat-lives" id="lives-box">
+                            <span class="stat-label">Życia</span>
+                            <span class="lives" id="lives" role="img" aria-label="Pozostałe życia: 3 z 3"></span>
+                        </div>
+                        <div class="stat" id="timer-box">
+                            <span class="stat-label">Czas</span>
+                            <span class="stat-value"><span id="timer">45</span><small>s</small></span>
+                        </div>
+                    </div>
+
+                    <div class="question" id="question-text">2 + 2 = ?</div>
+
+                    <form id="answer-form" onsubmit="checkAnswer(event)">
+                        <div class="answer-row">
+                            <input id="user-answer" type="text" inputmode="text" autocomplete="off"
+                                   placeholder="Wpisz wynik, np. 12 lub 3/4…" aria-label="Twoja odpowiedź">
+                            <button type="submit" class="btn btn-primary">Zatwierdź</button>
+                        </div>
+                    </form>
+                    <p id="message" role="status" aria-live="polite"></p>
+                    <div class="round-actions">
+                        <button type="button" class="btn btn-ghost" onclick="endGame()">Zakończ rundę</button>
+                    </div>
+                </div>
+
+                <div id="end-screen" class="hidden end-screen">
+                    <p class="end-eyebrow">Runda zakończona</p>
+                    <h2 id="end-title">Koniec czasu!</h2>
+                    <p class="end-player" id="end-player">—</p>
+                    <div class="final-score">
+                        <strong id="final-score">0</strong>
+                        <span>EXP w rundzie</span>
+                    </div>
+                    <p class="end-account" id="end-account">Poziom konta 1 · 0 / 100 EXP</p>
+                    <p class="end-levelup hidden" id="end-levelup">Awans!</p>
+                    <div class="end-actions">
+                        <button type="button" class="btn btn-primary" onclick="replayGame()">Zagraj ponownie</button>
+                        <button type="button" class="btn btn-soft" onclick="openTopics()">Zmień temat</button>
+                        <button type="button" class="btn btn-ghost" onclick="logoutPlayer()">Zmień gracza</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel pad-card" id="pad-card">
+                <div class="pad-head">
+                    <div>
+                        <h2>Brudnopis</h2>
+                        <p>Rysuj palcem, tabletem lub myszką.</p>
+                    </div>
+                    <button type="button" class="btn btn-soft pad-expand" id="pad-expand"
+                            aria-expanded="false" onclick="togglePadExpand()">Powiększ</button>
+                </div>
+                <div class="pad-toolbar">
+                    <button type="button" class="btn btn-soft is-active" id="mode-draw" onclick="setMode('draw')">Rysuj</button>
+                    <button type="button" class="btn btn-soft" id="mode-text" onclick="setMode('text')">Notatka</button>
+                    <button type="button" class="btn btn-ghost" onclick="clearPad()">Wyczyść</button>
+                </div>
+                <div class="notepad-container" id="pad-container">
+                    <canvas id="draw-pad"></canvas>
+                    <textarea id="text-pad" class="text-notes hidden" placeholder="Wpisz swoje notatki…"></textarea>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZAKŁADKI TEMATYCZNE -->
+    <section class="panel topics-card hidden" id="topics-screen" aria-labelledby="topics-title">
+        <div class="topics-head">
+            <div>
+                <p class="eyebrow">Zakładki</p>
+                <h2 id="topics-title">Czego dziś się uczymy?</h2>
+                <p id="topics-sub">Wybierz temat.</p>
+            </div>
+            <span class="level-chip" id="topics-grade-chip">SP 1</span>
+        </div>
+        <div class="topic-grid" id="topic-grid"></div>
+        <div class="topics-foot">
+            <p>Konto jest zapisane tylko w tej przeglądarce.</p>
+            <button type="button" class="btn btn-danger-ghost" onclick="requestDeleteAccount()">Usuń konto</button>
+        </div>
+    </section>
+
+    <!-- RANKING -->
+    <section class="panel ranking-card hidden" id="ranking-screen" aria-labelledby="ranking-title">
+        <div class="ranking-head">
+            <div>
+                <p class="eyebrow">Tablica wyników</p>
+                <h2 id="ranking-title">Ranking Kocurów</h2>
+                <p>Najlepsze rundy w podziale na klasę. Liczy się najlepszy wynik gracza.</p>
+            </div>
+            <span class="level-chip" id="ranking-level-chip">SP 1</span>
+        </div>
+        <div class="level-tabs" id="ranking-levels" role="tablist" aria-label="Klasa"></div>
+        <ol class="ranking-list" id="ranking-list"></ol>
+        <p class="ranking-empty hidden" id="ranking-empty">Brak wyników w tej klasie. Zagraj pierwszą rundę i wpisz się na tablicę!</p>
+    </section>
+</div>
+
+<dialog class="confirm-dialog" id="delete-dialog" aria-labelledby="delete-title">
+    <h2 id="delete-title">Usunąć konto?</h2>
+    <p>Konto <strong id="delete-name">—</strong> zniknie razem z EXP, poziomem i wynikami w rankingu. Tej operacji nie można cofnąć.</p>
+    <form method="dialog" class="confirm-actions">
+        <button type="submit" class="btn btn-soft" value="cancel">Anuluj</button>
+        <button type="button" class="btn btn-danger" onclick="confirmDeleteAccount()">Usuń konto</button>
+    </form>
+</dialog>
+
+<noscript>
+    <style>.intro-overlay { display: none !important; }</style>
+</noscript>
+
+<script>
+    // --- NOTATNIK ---
+    const canvas = document.getElementById('draw-pad');
+    const ctx = canvas.getContext('2d');
+    const textPad = document.getElementById('text-pad');
+    const modeDrawBtn = document.getElementById('mode-draw');
+    const modeTextBtn = document.getElementById('mode-text');
+    let painting = false;
+
+    function resizeCanvas() {
+        const container = document.getElementById('pad-container');
+        if (!container) return;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (!w || !h) return;
+        if (canvas.width === w && canvas.height === h) return;
+
+        let snapshot = null;
+        if (canvas.width && canvas.height) {
+            snapshot = document.createElement('canvas');
+            snapshot.width = canvas.width;
+            snapshot.height = canvas.height;
+            snapshot.getContext('2d').drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        ctx.strokeStyle = '#eef7f0';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        if (snapshot) ctx.drawImage(snapshot, 0, 0, w, h);
+    }
+
+    window.addEventListener('load', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
+
+    function getPoint(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX - rect.left) * (canvas.width / rect.width),
+            y: (e.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    function startPosition(e) {
+        painting = true;
+        if (canvas.setPointerCapture) {
+            try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        }
+        const p = getPoint(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!painting) return;
+        const p = getPoint(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        e.preventDefault();
+    }
+
+    function endPosition() {
+        if (!painting) return;
+        painting = false;
+        ctx.beginPath();
+    }
+
+    canvas.addEventListener('pointerdown', startPosition);
+    canvas.addEventListener('pointermove', draw);
+    canvas.addEventListener('pointerup', endPosition);
+    canvas.addEventListener('pointercancel', endPosition);
+
+    function setMode(mode) {
+        if (mode === 'draw') {
+            textPad.classList.add('hidden');
+            canvas.classList.remove('hidden');
+            modeDrawBtn.classList.add('is-active');
+            modeTextBtn.classList.remove('is-active');
+            resizeCanvas();
+        } else {
+            canvas.classList.add('hidden');
+            textPad.classList.remove('hidden');
+            modeTextBtn.classList.add('is-active');
+            modeDrawBtn.classList.remove('is-active');
+            textPad.focus();
+        }
+    }
+
+    function clearPad() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        textPad.value = '';
+    }
+
+    const padCard = document.getElementById('pad-card');
+    const padExpandBtn = document.getElementById('pad-expand');
+    let padExpanded = false;
+
+    function togglePadExpand(force) {
+        const next = typeof force === 'boolean' ? force : !padExpanded;
+        if (next === padExpanded) return;
+        padExpanded = next;
+        padCard.classList.toggle('is-expanded', next);
+        document.body.classList.toggle('pad-expanded', next);
+        padExpandBtn.textContent = next ? 'Zmniejsz' : 'Powiększ';
+        padExpandBtn.setAttribute('aria-expanded', String(next));
+        setTimeout(resizeCanvas, 60);
+        setTimeout(resizeCanvas, 340);
+    }
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && padExpanded) togglePadExpand(false);
+    });
+
+    // --- KONTA, EXP I GRA ---
+    const ACCOUNTS_KEY = 'kocury.accounts.v1';
+    const RESULTS_KEY = 'kocury.results.v1';
+    const memoryStore = {};
+
+    let score = 0;
+    let timeLeft = 45;
+    let initialTime = 45;
+    let timerInterval = null;
+    let correctAnswer = 0;
+    let correctDisplay = '';
+    let currentGrade = '';
+    let currentTopic = null;
+    let playerName = '';
+    let currentAccount = null;
+    let roundStartLevel = 1;
+    let roundActive = false;
+    let rankingLevel = '';
+
+    const MAX_LIVES = 3;
+    let lives = MAX_LIVES;
+
+    const authArea = document.getElementById('auth-area');
+    const playArea = document.getElementById('play-area');
+    const loginForm = document.getElementById('login-form');
+    const playerNameInput = document.getElementById('player-name');
+    const playerPasswordInput = document.getElementById('player-password');
+    const levelSelect = document.getElementById('grade-select');
+    const timeSelect = document.getElementById('time-select');
+    const loginError = document.getElementById('login-error');
+    const loginNotice = document.getElementById('login-notice');
+    const deleteDialog = document.getElementById('delete-dialog');
+    const deleteName = document.getElementById('delete-name');
+    const returnForm = document.getElementById('return-form');
+    const returnName = document.getElementById('return-name');
+    const returnPassword = document.getElementById('return-password');
+    const returnError = document.getElementById('return-error');
+    const returnAccounts = document.getElementById('return-accounts');
+    const returnToggle = document.getElementById('return-toggle');
+    const tabPlay = document.getElementById('tab-play');
+    const tabRanking = document.getElementById('tab-ranking');
+    const topicsScreen = document.getElementById('topics-screen');
+    const topicsSub = document.getElementById('topics-sub');
+    const topicsGradeChip = document.getElementById('topics-grade-chip');
+    const topicGrid = document.getElementById('topic-grid');
+    const rankingScreen = document.getElementById('ranking-screen');
+    const rankingLevels = document.getElementById('ranking-levels');
+    const rankingList = document.getElementById('ranking-list');
+    const rankingEmpty = document.getElementById('ranking-empty');
+    const rankingLevelChip = document.getElementById('ranking-level-chip');
+    const session = document.getElementById('session');
+    const sessionName = document.getElementById('session-name');
+    const sessionLevel = document.getElementById('session-level');
+    const greeting = document.getElementById('greeting');
+    const greetingSub = document.getElementById('greeting-sub');
+    const levelChip = document.getElementById('level-chip');
+    const gameScreen = document.getElementById('game-screen');
+    const endScreen = document.getElementById('end-screen');
+    const questionText = document.getElementById('question-text');
+    const userAnswer = document.getElementById('user-answer');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const timerBox = document.getElementById('timer-box');
+    const livesBox = document.getElementById('lives-box');
+    const livesDisplay = document.getElementById('lives');
+    const finalScore = document.getElementById('final-score');
+    const endPlayer = document.getElementById('end-player');
+    const endAccount = document.getElementById('end-account');
+    const endLevelup = document.getElementById('end-levelup');
+    const endTitle = document.getElementById('end-title');
+    const hudLevelWrap = document.getElementById('hud-level-wrap');
+    const hudLevel = document.getElementById('hud-level');
+    const hudExpText = document.getElementById('hud-exp-text');
+    const hudExpBar = document.getElementById('hud-exp-bar');
+    const hudExpFill = document.getElementById('hud-exp-fill');
+    const message = document.getElementById('message');
+
+    function readStore(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (raw !== null) return JSON.parse(raw);
+        } catch (err) { /* storage unavailable */ }
+        return key in memoryStore ? memoryStore[key] : fallback;
+    }
+
+    function writeStore(key, value) {
+        memoryStore[key] = value;
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        } catch (err) { /* storage unavailable */ }
+    }
+
+    const MIN_PASSWORD_LENGTH = 8;
+
+    function normalizeName(name) {
+        return String(name || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('pl');
+    }
+
+    async function hashPassword(name, password) {
+        const bytes = new TextEncoder().encode(`${normalizeName(name)}::${password}`);
+        const digest = await crypto.subtle.digest('SHA-256', bytes);
+        return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    function gradeLabel(code) {
+        const grade = CURRICULUM[code];
+        return grade ? grade.short : code;
+    }
+
+    // --- PROGRAM NAUCZANIA: ZAKŁADKI TEMATYCZNE ---
+    const randInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+    const pickOne = (list) => list[Math.floor(Math.random() * list.length)];
+    const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a) || 1);
+    const round2 = (value) => Math.round(value * 100) / 100;
+    const fracText = (num, den) => {
+        const g = gcd(num, den);
+        const top = num / g;
+        const bottom = den / g;
+        return bottom === 1 ? String(top) : `${top}/${bottom}`;
+    };
+    const plusTerm = (n) => (n < 0 ? `(${n})` : String(n));
+    const PYTHAGOREAN = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20]];
+    const LOGARITHMS = [[2, 8, 3], [2, 16, 4], [2, 32, 5], [3, 9, 2], [3, 27, 3], [3, 81, 4], [5, 25, 2], [5, 125, 3], [10, 1000, 3]];
+
+    const CURRICULUM = {
+        sp1: {
+            short: 'SP 1',
+            title: 'Klasa 1 SP',
+            topics: [
+                {
+                    id: 'sp1-liczby',
+                    name: 'Liczby do 20',
+                    desc: 'Porównywanie i kolejność liczb',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(1, 20);
+                            let b = randInt(1, 20);
+                            if (b === a) b = a === 20 ? 19 : a + 1;
+                            return { q: `Która liczba jest większa: ${a} czy ${b}?`, a: Math.max(a, b) };
+                        }
+                        const n = randInt(1, 19);
+                        return { q: `Jaka liczba jest o 1 większa od ${n}?`, a: n + 1 };
+                    }
+                },
+                {
+                    id: 'sp1-dodawanie',
+                    name: 'Dodawanie do 20',
+                    desc: 'Sumy bez przekraczania 20',
+                    gen: () => {
+                        const a = randInt(1, 12);
+                        const b = randInt(1, 20 - a);
+                        return { q: `${a} + ${b} = ?`, a: a + b };
+                    }
+                },
+                {
+                    id: 'sp1-odejmowanie',
+                    name: 'Odejmowanie do 20',
+                    desc: 'Różnice w zakresie do 20',
+                    gen: () => {
+                        const a = randInt(5, 20);
+                        const b = randInt(1, a - 1);
+                        return { q: `${a} − ${b} = ?`, a: a - b };
+                    }
+                },
+                {
+                    id: 'sp1-figury',
+                    name: 'Figury geometryczne',
+                    desc: 'Boki i kąty podstawowych figur',
+                    gen: () => {
+                        const figure = pickOne([['trójkąt', 3], ['kwadrat', 4], ['prostokąt', 4], ['pięciokąt', 5], ['sześciokąt', 6]]);
+                        return { q: `Ile boków ma ${figure[0]}?`, a: figure[1] };
+                    }
+                },
+                {
+                    id: 'sp1-miary',
+                    name: 'Miary i pieniądze',
+                    desc: 'Godziny, minuty i grosze',
+                    gen: () => {
+                        const type = randInt(0, 3);
+                        if (type === 0) return { q: 'Ile minut ma kwadrans?', a: 15 };
+                        if (type === 1) return { q: 'Ile minut ma pół godziny?', a: 30 };
+                        if (type === 2) {
+                            const h = randInt(2, 3);
+                            return { q: `Ile minut mają ${h} godziny?`, a: h * 60 };
+                        }
+                        const zl = randInt(1, 9);
+                        return { q: `Ile groszy to ${zl} zł?`, a: zl * 100 };
+                    }
+                }
+            ]
+        },
+        sp2: {
+            short: 'SP 2',
+            title: 'Klasa 2 SP',
+            topics: [
+                {
+                    id: 'sp2-dodawanie',
+                    name: 'Dodawanie do 100',
+                    desc: 'Sumy w zakresie do 100',
+                    gen: () => {
+                        const a = randInt(10, 70);
+                        const b = randInt(5, 100 - a);
+                        return { q: `${a} + ${b} = ?`, a: a + b };
+                    }
+                },
+                {
+                    id: 'sp2-odejmowanie',
+                    name: 'Odejmowanie do 100',
+                    desc: 'Różnice w zakresie do 100',
+                    gen: () => {
+                        const a = randInt(30, 99);
+                        const b = randInt(2, a - 10);
+                        return { q: `${a} − ${b} = ?`, a: a - b };
+                    }
+                },
+                {
+                    id: 'sp2-mnozenie',
+                    name: 'Mnożenie do 30',
+                    desc: 'Iloczyny w zakresie do 30',
+                    gen: () => {
+                        const a = randInt(2, 5);
+                        const b = randInt(2, Math.floor(30 / a));
+                        return { q: `${a} · ${b} = ?`, a: a * b };
+                    }
+                },
+                {
+                    id: 'sp2-dzielenie',
+                    name: 'Dzielenie do 30',
+                    desc: 'Dzielenie bez reszty',
+                    gen: () => {
+                        const b = randInt(2, 5);
+                        const result = randInt(2, Math.floor(30 / b));
+                        return { q: `${b * result} ÷ ${b} = ?`, a: result };
+                    }
+                },
+                {
+                    id: 'sp2-miary',
+                    name: 'Miary i zegar',
+                    desc: 'Metry, kilogramy i minuty',
+                    gen: () => {
+                        const type = randInt(0, 2);
+                        if (type === 0) {
+                            const m = randInt(2, 9);
+                            return { q: `Ile centymetrów to ${m} m?`, a: m * 100 };
+                        }
+                        if (type === 1) {
+                            const kg = randInt(1, 5);
+                            return { q: `Ile gramów to ${kg} kg?`, a: kg * 1000 };
+                        }
+                        const min = randInt(2, 4) * 10;
+                        return { q: `Ile sekund to ${min} minut?`, a: min * 60 };
+                    }
+                }
+            ]
+        },
+        sp3: {
+            short: 'SP 3',
+            title: 'Klasa 3 SP',
+            topics: [
+                {
+                    id: 'sp3-liczby',
+                    name: 'Liczby do 1000',
+                    desc: 'Dodawanie i odejmowanie w zakresie 1000',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(120, 700);
+                            const b = randInt(20, 999 - a);
+                            return { q: `${a} + ${b} = ?`, a: a + b };
+                        }
+                        const a = randInt(250, 999);
+                        const b = randInt(20, a - 100);
+                        return { q: `${a} − ${b} = ?`, a: a - b };
+                    }
+                },
+                {
+                    id: 'sp3-tabliczka',
+                    name: 'Tabliczka mnożenia',
+                    desc: 'Mnożenie do 100',
+                    gen: () => {
+                        const a = randInt(2, 10);
+                        const b = randInt(2, 10);
+                        return { q: `${a} · ${b} = ?`, a: a * b };
+                    }
+                },
+                {
+                    id: 'sp3-dzielenie',
+                    name: 'Dzielenie',
+                    desc: 'Dzielenie w zakresie tabliczki mnożenia',
+                    gen: () => {
+                        const a = randInt(2, 10);
+                        const b = randInt(2, 10);
+                        return { q: `${a * b} ÷ ${a} = ?`, a: b };
+                    }
+                },
+                {
+                    id: 'sp3-mnozenie',
+                    name: 'Mnożenie poza tabliczką',
+                    desc: 'Liczby dwucyfrowe razy jednocyfrowe',
+                    gen: () => {
+                        const a = randInt(12, 49);
+                        const b = randInt(2, 9);
+                        return { q: `${a} · ${b} = ?`, a: a * b };
+                    }
+                },
+                {
+                    id: 'sp3-obwody',
+                    name: 'Obwody figur',
+                    desc: 'Prostokąt i kwadrat',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 20);
+                            return { q: `Obwód kwadratu o boku ${a} cm?`, a: 4 * a, display: `${4 * a} cm` };
+                        }
+                        const a = randInt(2, 20);
+                        const b = randInt(2, 20);
+                        return { q: `Obwód prostokąta o bokach ${a} cm i ${b} cm?`, a: 2 * (a + b), display: `${2 * (a + b)} cm` };
+                    }
+                },
+                {
+                    id: 'sp3-czas',
+                    name: 'Miary czasu',
+                    desc: 'Godziny, minuty i sekundy',
+                    gen: () => {
+                        const h = randInt(1, 3);
+                        const min = randInt(1, 11) * 5;
+                        return { q: `Ile minut to ${h} godz. i ${min} min?`, a: h * 60 + min };
+                    }
+                }
+            ]
+        },
+        sp4: {
+            short: 'SP 4',
+            title: 'Klasa 4 SP',
+            topics: [
+                {
+                    id: 'sp4-dodawanie',
+                    name: 'Dodawanie pisemne',
+                    desc: 'Dodawanie liczb trzycyfrowych',
+                    gen: () => {
+                        const a = randInt(120, 899);
+                        const b = randInt(120, 899);
+                        return { q: `${a} + ${b} = ?`, a: a + b };
+                    }
+                },
+                {
+                    id: 'sp4-odejmowanie',
+                    name: 'Odejmowanie pisemne',
+                    desc: 'Odejmowanie liczb trzycyfrowych',
+                    gen: () => {
+                        const a = randInt(400, 999);
+                        const b = randInt(120, a - 100);
+                        return { q: `${a} − ${b} = ?`, a: a - b };
+                    }
+                },
+                {
+                    id: 'sp4-ulamki-dodawanie',
+                    name: 'Ułamki — dodawanie',
+                    desc: 'Dodawanie ułamków o jednakowych mianownikach',
+                    gen: () => {
+                        const den = pickOne([5, 6, 7, 8, 10]);
+                        const n1 = randInt(1, den - 1);
+                        const n2 = randInt(1, den - n1);
+                        return { q: `${n1}/${den} + ${n2}/${den} = ?`, a: (n1 + n2) / den, display: fracText(n1 + n2, den) };
+                    }
+                },
+                {
+                    id: 'sp4-ulamki-odejmowanie',
+                    name: 'Ułamki — odejmowanie',
+                    desc: 'Odejmowanie ułamków o jednakowych mianownikach',
+                    gen: () => {
+                        const den = pickOne([5, 6, 8, 10]);
+                        const n1 = randInt(2, den - 1);
+                        const n2 = randInt(1, n1 - 1);
+                        return { q: `${n1}/${den} − ${n2}/${den} = ?`, a: (n1 - n2) / den, display: fracText(n1 - n2, den) };
+                    }
+                },
+                {
+                    id: 'sp4-ulamki-dziesietne',
+                    name: 'Ułamki dziesiętne',
+                    desc: 'Dodawanie i odejmowanie',
+                    gen: () => {
+                        const a = randInt(15, 95) / 10;
+                        const b = randInt(15, 95) / 10;
+                        if (Math.random() < 0.5) return { q: `${a} + ${b} = ?`, a: round2(a + b) };
+                        const hi = Math.max(a, b);
+                        const lo = Math.min(a, b);
+                        return { q: `${hi} − ${lo} = ?`, a: round2(hi - lo) };
+                    }
+                },
+                {
+                    id: 'sp4-obwod',
+                    name: 'Obwód prostokąta',
+                    desc: 'Obwody w centymetrach',
+                    gen: () => {
+                        const a = randInt(3, 25);
+                        const b = randInt(3, 25);
+                        return { q: `Prostokąt ma boki ${a} cm i ${b} cm. Jaki jest jego obwód?`, a: 2 * (a + b), display: `${2 * (a + b)} cm` };
+                    }
+                }
+            ]
+        },
+        sp5: {
+            short: 'SP 5',
+            title: 'Klasa 5 SP',
+            topics: [
+                {
+                    id: 'sp5-ulamki-dodawanie',
+                    name: 'Ułamki — różne mianowniki',
+                    desc: 'Dodawanie ułamków zwykłych',
+                    gen: () => {
+                        const [d1, d2] = pickOne([[2, 3], [2, 5], [3, 4], [4, 5], [3, 6], [2, 4]]);
+                        const n1 = randInt(1, d1 - 1);
+                        const n2 = randInt(1, d2 - 1);
+                        const lcm = (d1 * d2) / gcd(d1, d2);
+                        const num = n1 * (lcm / d1) + n2 * (lcm / d2);
+                        return { q: `${n1}/${d1} + ${n2}/${d2} = ?`, a: num / lcm, display: fracText(num, lcm) };
+                    }
+                },
+                {
+                    id: 'sp5-ulamki-mnozenie',
+                    name: 'Ułamki — mnożenie',
+                    desc: 'Mnożenie ułamków zwykłych',
+                    gen: () => {
+                        const d1 = randInt(2, 6);
+                        const d2 = randInt(2, 6);
+                        const n1 = randInt(1, d1 - 1);
+                        const n2 = randInt(1, d2 - 1);
+                        return { q: `${n1}/${d1} · ${n2}/${d2} = ?`, a: (n1 * n2) / (d1 * d2), display: fracText(n1 * n2, d1 * d2) };
+                    }
+                },
+                {
+                    id: 'sp5-dziesietne',
+                    name: 'Ułamki dziesiętne',
+                    desc: 'Mnożenie i dzielenie przez 10, 100, 1000',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const value = randInt(105, 995) / 100;
+                            const factor = pickOne([10, 100, 1000]);
+                            return { q: `${value} · ${factor} = ?`, a: round2(value * factor) };
+                        }
+                        const value = randInt(15, 95) / 10;
+                        return { q: `${value} ÷ 10 = ?`, a: round2(value / 10) };
+                    }
+                },
+                {
+                    id: 'sp5-pole-prostokata',
+                    name: 'Pole prostokąta',
+                    desc: 'Pole prostokąta i kwadratu',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 15);
+                            return { q: `Pole kwadratu o boku ${a} cm?`, a: a * a, display: `${a * a} cm²` };
+                        }
+                        const a = randInt(2, 20);
+                        const b = randInt(2, 20);
+                        return { q: `Pole prostokąta o bokach ${a} cm i ${b} cm?`, a: a * b, display: `${a * b} cm²` };
+                    }
+                },
+                {
+                    id: 'sp5-pola',
+                    name: 'Pole trójkąta i równoległoboku',
+                    desc: 'Pola figur płaskich',
+                    gen: () => {
+                        const h = randInt(2, 12);
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 12) * 2;
+                            return { q: `Pole trójkąta o podstawie ${a} cm i wysokości ${h} cm?`, a: (a * h) / 2, display: `${(a * h) / 2} cm²` };
+                        }
+                        const a = randInt(2, 15);
+                        return { q: `Pole równoległoboku o podstawie ${a} cm i wysokości ${h} cm?`, a: a * h, display: `${a * h} cm²` };
+                    }
+                },
+                {
+                    id: 'sp5-jednostki-pola',
+                    name: 'Jednostki pola',
+                    desc: 'Ary, hektary i metry kwadratowe',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const ar = randInt(2, 9);
+                            return { q: `Ile metrów kwadratowych ma ${ar} arów?`, a: ar * 100 };
+                        }
+                        const ha = randInt(1, 5);
+                        return { q: `Ile metrów kwadratowych ma ${ha} ha?`, a: ha * 10000 };
+                    }
+                }
+            ]
+        },
+        sp6: {
+            short: 'SP 6',
+            title: 'Klasa 6 SP',
+            topics: [
+                {
+                    id: 'sp6-calkowite-dodawanie',
+                    name: 'Liczby całkowite — dodawanie',
+                    desc: 'Dodawanie i odejmowanie liczb ujemnych',
+                    gen: () => {
+                        const a = randInt(-25, 25);
+                        const b = randInt(-25, 25);
+                        if (Math.random() < 0.5) return { q: `${plusTerm(a)} + ${plusTerm(b)} = ?`, a: a + b };
+                        return { q: `${plusTerm(a)} − ${plusTerm(b)} = ?`, a: a - b };
+                    }
+                },
+                {
+                    id: 'sp6-calkowite-mnozenie',
+                    name: 'Liczby całkowite — mnożenie',
+                    desc: 'Mnożenie i dzielenie liczb ujemnych',
+                    gen: () => {
+                        const a = randInt(-8, 8) || 3;
+                        const b = randInt(-8, 8) || -4;
+                        if (Math.random() < 0.5) return { q: `${plusTerm(a)} · ${plusTerm(b)} = ?`, a: a * b };
+                        return { q: `${plusTerm(a * b)} ÷ ${plusTerm(b)} = ?`, a: a };
+                    }
+                },
+                {
+                    id: 'sp6-procenty',
+                    name: 'Procenty',
+                    desc: 'Obliczanie procentu liczby',
+                    gen: () => {
+                        const percent = pickOne([10, 20, 25, 50, 80]);
+                        const base = randInt(2, 40) * 20;
+                        return { q: `Ile to ${percent}% z ${base}?`, a: (base * percent) / 100 };
+                    }
+                },
+                {
+                    id: 'sp6-pola',
+                    name: 'Pole trapezu i rombu',
+                    desc: 'Pola wielokątów',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 10);
+                            const b = randInt(2, 10);
+                            const h = randInt(2, 10);
+                            const area = ((a + b) * h) / 2;
+                            return { q: `Pole trapezu o podstawach ${a} cm, ${b} cm i wysokości ${h} cm?`, a: round2(area), display: `${round2(area)} cm²` };
+                        }
+                        const e = randInt(2, 10) * 2;
+                        const f = randInt(2, 10);
+                        return { q: `Pole rombu o przekątnych ${e} cm i ${f} cm?`, a: (e * f) / 2, display: `${(e * f) / 2} cm²` };
+                    }
+                },
+                {
+                    id: 'sp6-wyrazenia',
+                    name: 'Wyrażenia algebraiczne',
+                    desc: 'Wartość liczbowa wyrażenia',
+                    gen: () => {
+                        const a = randInt(2, 6);
+                        const b = randInt(1, 15);
+                        const x = randInt(2, 9);
+                        if (Math.random() < 0.5) return { q: `Oblicz ${a}x + ${b} dla x = ${x}`, a: a * x + b };
+                        return { q: `Oblicz ${a}x − ${b} dla x = ${x}`, a: a * x - b };
+                    }
+                },
+                {
+                    id: 'sp6-rownania',
+                    name: 'Równania',
+                    desc: 'Rozwiązywanie prostych równań',
+                    gen: () => {
+                        const a = randInt(2, 6);
+                        const b = randInt(1, 20);
+                        const x = randInt(2, 10);
+                        return { q: `${a}x + ${b} = ${a * x + b}, x = ?`, a: x };
+                    }
+                },
+                {
+                    id: 'sp6-objetosc',
+                    name: 'Objętość prostopadłościanu',
+                    desc: 'Objętość bryły',
+                    gen: () => {
+                        const a = randInt(2, 10);
+                        const b = randInt(2, 10);
+                        const h = randInt(2, 10);
+                        return { q: `Prostopadłościan ${a} × ${b} × ${h} cm. Objętość?`, a: a * b * h, display: `${a * b * h} cm³` };
+                    }
+                }
+            ]
+        },
+        sp7: {
+            short: 'SP 7',
+            title: 'Klasa 7 SP',
+            topics: [
+                {
+                    id: 'sp7-potegi',
+                    name: 'Potęgi',
+                    desc: 'Potęgowanie i iloczyn potęg',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 5);
+                            const n = randInt(0, 4);
+                            return { q: `${a}^${n} = ?`, a: Math.pow(a, n) };
+                        }
+                        const a = randInt(2, 4);
+                        const n1 = randInt(1, 3);
+                        const n2 = randInt(1, 3);
+                        return { q: `${a}^${n1} · ${a}^${n2} = ?`, a: Math.pow(a, n1 + n2) };
+                    }
+                },
+                {
+                    id: 'sp7-pierwiastki',
+                    name: 'Pierwiastki kwadratowe',
+                    desc: 'Pierwiastki liczb naturalnych',
+                    gen: () => {
+                        const r = randInt(2, 13);
+                        return { q: `√${r * r} = ?`, a: r };
+                    }
+                },
+                {
+                    id: 'sp7-procenty',
+                    name: 'Procenty — zmiany ceny',
+                    desc: 'Podwyżki i obniżki',
+                    gen: () => {
+                        const price = randInt(2, 10) * 20;
+                        const percent = pickOne([10, 20, 25, 50]);
+                        const change = (price * percent) / 100;
+                        if (Math.random() < 0.5) {
+                            return { q: `Cena ${price} zł wzrosła o ${percent}%. Nowa cena?`, a: round2(price + change), display: `${round2(price + change)} zł` };
+                        }
+                        return { q: `Cena ${price} zł spadła o ${percent}%. Nowa cena?`, a: round2(price - change), display: `${round2(price - change)} zł` };
+                    }
+                },
+                {
+                    id: 'sp7-wyrazenia',
+                    name: 'Wyrażenia algebraiczne',
+                    desc: 'Redukcja wyrazów podobnych',
+                    gen: () => {
+                        const a = randInt(2, 7);
+                        const b = randInt(2, 7);
+                        const c = randInt(1, Math.min(a + b - 1, 6));
+                        const x = randInt(2, 9);
+                        return { q: `Oblicz ${a}x + ${b}x − ${c}x dla x = ${x}`, a: (a + b - c) * x };
+                    }
+                },
+                {
+                    id: 'sp7-rownania',
+                    name: 'Równania liniowe',
+                    desc: 'Rozwiązywanie równań',
+                    gen: () => {
+                        const a = randInt(3, 9);
+                        const b = randInt(2, 20);
+                        const x = randInt(2, 12);
+                        return { q: `${a}x − ${b} = ${a * x - b}, x = ?`, a: x };
+                    }
+                },
+                {
+                    id: 'sp7-katy',
+                    name: 'Kąty przyległe',
+                    desc: 'Kąty przyległe i wierzchołkowe',
+                    gen: () => {
+                        const angle = randInt(20, 160);
+                        return { q: `Jeden z kątów przyległych ma ${angle}°. Ile stopni ma drugi?`, a: 180 - angle, display: `${180 - angle}°` };
+                    }
+                }
+            ]
+        },
+        sp8: {
+            short: 'SP 8',
+            title: 'Klasa 8 SP',
+            topics: [
+                {
+                    id: 'sp8-pitagoras-c',
+                    name: 'Twierdzenie Pitagorasa',
+                    desc: 'Obliczanie przeciwprostokątnej',
+                    gen: () => {
+                        const [a, b, c] = pickOne(PYTHAGOREAN);
+                        return { q: `Przyprostokątne mają ${a} i ${b}. Ile ma przeciwprostokątna?`, a: c };
+                    }
+                },
+                {
+                    id: 'sp8-pitagoras-a',
+                    name: 'Pitagoras — przyprostokątna',
+                    desc: 'Szukanie przyprostokątnej',
+                    gen: () => {
+                        const [a, b, c] = pickOne(PYTHAGOREAN);
+                        return { q: `Przeciwprostokątna ma ${c}, jedna przyprostokątna ${a}. Ile ma druga?`, a: b };
+                    }
+                },
+                {
+                    id: 'sp8-graniastoslupy',
+                    name: 'Graniastosłupy',
+                    desc: 'Objętość graniastosłupa',
+                    gen: () => {
+                        const a = randInt(2, 10);
+                        const b = randInt(2, 10);
+                        const h = randInt(2, 12);
+                        return { q: `Podstawa ${a} × ${b} cm, wysokość ${h} cm. Objętość?`, a: a * b * h, display: `${a * b * h} cm³` };
+                    }
+                },
+                {
+                    id: 'sp8-okrag',
+                    name: 'Okrąg i koło',
+                    desc: 'Obwód i pole koła (π ≈ 3)',
+                    gen: () => {
+                        const r = randInt(2, 10);
+                        if (Math.random() < 0.5) return { q: `Obwód koła o promieniu ${r} (π ≈ 3)?`, a: 6 * r, display: `${6 * r} cm` };
+                        return { q: `Pole koła o promieniu ${r} (π ≈ 3)?`, a: 3 * r * r, display: `${3 * r * r} cm²` };
+                    }
+                },
+                {
+                    id: 'sp8-statystyka',
+                    name: 'Statystyka',
+                    desc: 'Średnia arytmetyczna',
+                    gen: () => {
+                        const mean = randInt(4, 16);
+                        let values = null;
+                        for (let i = 0; i < 25 && !values; i += 1) {
+                            const sample = [randInt(1, 25), randInt(1, 25), randInt(1, 25)];
+                            const last = 4 * mean - sample[0] - sample[1] - sample[2];
+                            if (last >= 1 && last <= 30) values = [...sample, last];
+                        }
+                        if (!values) values = [mean - 2, mean, mean, mean + 2];
+                        return { q: `Średnia arytmetyczna liczb ${values.join(', ')}?`, a: mean };
+                    }
+                },
+                {
+                    id: 'sp8-prawdopodobienstwo',
+                    name: 'Prawdopodobieństwo',
+                    desc: 'Prawdopodobieństwo klasyczne',
+                    gen: () => {
+                        const total = pickOne([10, 10, 20]);
+                        const white = randInt(1, total - 1);
+                        return { q: `W pudełku jest ${white} kul białych i ${total - white} czarnych. Prawdopodobieństwo wylosowania białej?`, a: white / total, display: fracText(white, total) };
+                    }
+                },
+                {
+                    id: 'sp8-potegi-ujemne',
+                    name: 'Potęgi o wykładniku całkowitym',
+                    desc: 'Wykładniki ujemne',
+                    gen: () => {
+                        const item = pickOne([[2, -1, 0.5], [2, -2, 0.25], [2, -3, 0.125], [4, -1, 0.25], [5, -1, 0.2], [10, -1, 0.1], [10, -2, 0.01], [10, -3, 0.001]]);
+                        return { q: `${item[0]}^(${item[1]}) = ?`, a: item[2] };
+                    }
+                }
+            ]
+        },
+        liceum1: {
+            short: 'LO 1',
+            title: 'Klasa 1 liceum',
+            topics: [
+                {
+                    id: 'lo1-przedzialy',
+                    name: 'Zbiory i przedziały',
+                    desc: 'Liczby całkowite w przedziałach',
+                    gen: () => {
+                        const a = randInt(-4, 3);
+                        const b = a + randInt(3, 8);
+                        if (Math.random() < 0.5) {
+                            return { q: `Ile liczb całkowitych należy do przedziału (${a}, ${b})?`, a: b - a - 1 };
+                        }
+                        return { q: `Ile liczb całkowitych należy do przedziału ⟨${a}, ${b}⟩?`, a: b - a + 1 };
+                    }
+                },
+                {
+                    id: 'lo1-potegi',
+                    name: 'Potęgi i pierwiastki',
+                    desc: 'Działania na pierwiastkach',
+                    gen: () => {
+                        const a = randInt(2, 9);
+                        const b = randInt(2, 9);
+                        return { q: `√${a * a} · √${b * b} = ?`, a: a * b };
+                    }
+                },
+                {
+                    id: 'lo1-wzory',
+                    name: 'Wzory skróconego mnożenia',
+                    desc: 'Kwadrat sumy i różnicy',
+                    gen: () => {
+                        const a = randInt(2, 9);
+                        const b = randInt(1, 9);
+                        if (Math.random() < 0.5) return { q: `Oblicz (${a} + ${b})²`, a: Math.pow(a + b, 2) };
+                        return { q: `Oblicz (${a} − ${b})²`, a: Math.pow(a - b, 2) };
+                    }
+                },
+                {
+                    id: 'lo1-rownania',
+                    name: 'Równania liniowe',
+                    desc: 'Równania z nawiasami',
+                    gen: () => {
+                        const a = randInt(2, 6);
+                        const x = randInt(3, 10);
+                        if (Math.random() < 0.5) {
+                            const b = randInt(1, 5);
+                            return { q: `${a}(x + ${b}) = ${a * (x + b)}, x = ?`, a: x };
+                        }
+                        const b = randInt(1, x - 2);
+                        return { q: `${a}(x − ${b}) = ${a * (x - b)}, x = ?`, a: x };
+                    }
+                },
+                {
+                    id: 'lo1-nierownosci',
+                    name: 'Nierówności liniowe',
+                    desc: 'Najmniejsza liczba całkowita',
+                    gen: () => {
+                        const a = randInt(2, 6);
+                        const b = randInt(1, 12);
+                        const c = randInt(1, 25);
+                        return { q: `Najmniejsza liczba całkowita spełniająca ${a}x − ${b} > ${c}?`, a: Math.floor((c + b) / a) + 1 };
+                    }
+                },
+                {
+                    id: 'lo1-funkcja',
+                    name: 'Funkcja liniowa',
+                    desc: 'Wartości i miejsce zerowe',
+                    gen: () => {
+                        const a = randInt(2, 6);
+                        const b = randInt(1, 9);
+                        if (Math.random() < 0.5) {
+                            const x = randInt(-4, 6);
+                            return { q: `f(x) = ${a}x + ${b}. Oblicz f(${x}).`, a: a * x + b };
+                        }
+                        return { q: `f(x) = ${a}x − ${a * b}. Miejsce zerowe?`, a: b };
+                    }
+                }
+            ]
+        },
+        liceum2: {
+            short: 'LO 2',
+            title: 'Klasa 2 liceum',
+            topics: [
+                {
+                    id: 'lo2-kwadratowa',
+                    name: 'Funkcja kwadratowa',
+                    desc: 'Pierwiastki i wyróżnik',
+                    gen: () => {
+                        const p = randInt(2, 8);
+                        let q = randInt(2, 8);
+                        if (q === p) q = p + 1;
+                        if (Math.random() < 0.5) {
+                            return { q: `x² − ${p + q}x + ${p * q} = 0. Większy pierwiastek?`, a: Math.max(p, q) };
+                        }
+                        return { q: `Δ dla x² − ${p + q}x + ${p * q} = 0?`, a: (p + q) * (p + q) - 4 * p * q };
+                    }
+                },
+                {
+                    id: 'lo2-wzory',
+                    name: 'Wzory skróconego mnożenia',
+                    desc: 'Sześcian różnicy i różnica sześcianów',
+                    gen: () => {
+                        const a = randInt(4, 9);
+                        const b = randInt(1, a - 1);
+                        if (Math.random() < 0.5) return { q: `Oblicz (${a} − ${b})³`, a: Math.pow(a - b, 3) };
+                        return { q: `Oblicz ${a}³ − ${b}³`, a: Math.pow(a, 3) - Math.pow(b, 3) };
+                    }
+                },
+                {
+                    id: 'lo2-logarytmy',
+                    name: 'Logarytmy',
+                    desc: 'Obliczanie logarytmów',
+                    gen: () => {
+                        const [base, value, result] = pickOne(LOGARITHMS);
+                        return { q: `log_${base} ${value} = ?`, a: result };
+                    }
+                },
+                {
+                    id: 'lo2-wykladnicza',
+                    name: 'Funkcja wykładnicza',
+                    desc: 'Równania wykładnicze',
+                    gen: () => {
+                        const base = pickOne([2, 3, 5]);
+                        const exp = randInt(2, 4);
+                        if (Math.random() < 0.5) return { q: `${base}^x = ${Math.pow(base, exp)}, x = ?`, a: exp };
+                        return { q: `${base}^x = 1/${base}, x = ?`, a: -1 };
+                    }
+                },
+                {
+                    id: 'lo2-wielomiany',
+                    name: 'Wielomiany',
+                    desc: 'Wartość wielomianu',
+                    gen: () => {
+                        const a = randInt(1, 4);
+                        const b = randInt(1, 5);
+                        const c = randInt(1, 6);
+                        const x = randInt(2, 3);
+                        return { q: `W(x) = x³ + ${a}x² − ${b}x + ${c}. Oblicz W(${x}).`, a: Math.pow(x, 3) + a * x * x - b * x + c };
+                    }
+                },
+                {
+                    id: 'lo2-procent-skladany',
+                    name: 'Procent składany',
+                    desc: 'Kapitał po dwóch latach',
+                    gen: () => {
+                        const capital = pickOne([1000, 2000, 5000]);
+                        const rate = pickOne([10, 20, 25]);
+                        const value = capital * Math.pow(1 + rate / 100, 2);
+                        return { q: `${capital} zł na ${rate}% rocznie (procent składany). Kapitał po 2 latach?`, a: round2(value), display: `${round2(value)} zł` };
+                    }
+                }
+            ]
+        },
+        liceum3: {
+            short: 'LO 3',
+            title: 'Klasa 3 liceum',
+            topics: [
+                {
+                    id: 'lo3-arytmetyczny',
+                    name: 'Ciągi arytmetyczne',
+                    desc: 'Wyrazy ciągu',
+                    gen: () => {
+                        const a1 = randInt(1, 10);
+                        const r = randInt(2, 6);
+                        const n = randInt(6, 12);
+                        return { q: `Ciąg arytmetyczny: a₁ = ${a1}, r = ${r}. Oblicz a${n}.`, a: a1 + (n - 1) * r };
+                    }
+                },
+                {
+                    id: 'lo3-geometryczny',
+                    name: 'Ciągi geometryczne',
+                    desc: 'Wyrazy ciągu geometrycznego',
+                    gen: () => {
+                        const a1 = randInt(1, 4);
+                        const q = randInt(2, 3);
+                        const n = randInt(4, 6);
+                        return { q: `Ciąg geometryczny: a₁ = ${a1}, q = ${q}. Oblicz a${n}.`, a: a1 * Math.pow(q, n - 1) };
+                    }
+                },
+                {
+                    id: 'lo3-trygonometria',
+                    name: 'Trygonometria',
+                    desc: 'Wartości kątów 30°, 45°, 60°, 90°',
+                    gen: () => {
+                        const item = pickOne([
+                            ['sin 30°', 0.5], ['sin 90°', 1], ['cos 0°', 1], ['cos 60°', 0.5],
+                            ['cos 90°', 0], ['tan 45°', 1], ['sin 0°', 0]
+                        ]);
+                        return { q: `${item[0]} = ?`, a: item[1] };
+                    }
+                },
+                {
+                    id: 'lo3-logarytmy',
+                    name: 'Logarytmy — działania',
+                    desc: 'Suma logarytmów',
+                    gen: () => {
+                        const base = pickOne([2, 3, 5]);
+                        const e1 = randInt(1, 4);
+                        const e2 = randInt(1, 4);
+                        return { q: `log_${base} ${Math.pow(base, e1)} + log_${base} ${Math.pow(base, e2)} = ?`, a: e1 + e2 };
+                    }
+                },
+                {
+                    id: 'lo3-analityczna',
+                    name: 'Geometria analityczna',
+                    desc: 'Odległość i środek odcinka',
+                    gen: () => {
+                        const [a, b] = pickOne([[3, 4], [6, 8], [5, 12], [9, 12], [8, 15]]);
+                        const x1 = randInt(-5, 5);
+                        const y1 = randInt(-5, 5);
+                        if (Math.random() < 0.5) {
+                            return { q: `Odległość punktów A = (${x1}, ${y1}) i B = (${x1 + a}, ${y1 - b})?`, a: Math.hypot(a, b) };
+                        }
+                        const k = randInt(1, 6);
+                        return { q: `A = (${x1}, ${y1}), B = (${x1 + 2 * k}, ${y1 + 4}). Jaka jest współrzędna x środka odcinka AB?`, a: x1 + k };
+                    }
+                },
+                {
+                    id: 'lo3-statystyka',
+                    name: 'Statystyka',
+                    desc: 'Mediana i średnia',
+                    gen: () => {
+                        const values = [randInt(1, 9), randInt(1, 9), randInt(1, 9), randInt(1, 9), randInt(1, 9)];
+                        const sorted = [...values].sort((a, b) => a - b);
+                        if (Math.random() < 0.5) return { q: `Mediana liczb ${values.join(', ')}?`, a: sorted[2] };
+                        const sum = sorted.reduce((acc, value) => acc + value, 0);
+                        return { q: `Średnia liczb ${values.join(', ')}?`, a: round2(sum / 5) };
+                    }
+                }
+            ]
+        },
+        liceum4: {
+            short: 'LO 4',
+            title: 'Klasa 4 liceum',
+            topics: [
+                {
+                    id: 'lo4-objetosc',
+                    name: 'Stereometria — objętość',
+                    desc: 'Graniastosłupy, ostrosłupy i walce',
+                    gen: () => {
+                        const type = randInt(0, 2);
+                        if (type === 0) {
+                            const a = randInt(2, 8);
+                            const b = randInt(2, 8);
+                            const h = randInt(2, 10);
+                            return { q: `Graniastosłup o podstawie ${a} × ${b} i wysokości ${h}. Objętość?`, a: a * b * h };
+                        }
+                        if (type === 1) {
+                            const a = randInt(2, 6);
+                            const b = randInt(2, 6);
+                            const h = randInt(1, 6);
+                            return { q: `Ostrosłup o podstawie ${a} × ${b} i wysokości ${3 * h} cm. Objętość?`, a: a * b * h };
+                        }
+                        const r = randInt(2, 6);
+                        const h = randInt(2, 8);
+                        return { q: `Walec o promieniu ${r} i wysokości ${h} (π ≈ 3). Objętość?`, a: 3 * r * r * h };
+                    }
+                },
+                {
+                    id: 'lo4-pole',
+                    name: 'Stereometria — pole powierzchni',
+                    desc: 'Prostopadłościan i kula',
+                    gen: () => {
+                        if (Math.random() < 0.5) {
+                            const a = randInt(2, 8);
+                            const b = randInt(2, 8);
+                            const c = randInt(2, 8);
+                            return { q: `Pole powierzchni prostopadłościanu ${a} × ${b} × ${c}?`, a: 2 * (a * b + a * c + b * c) };
+                        }
+                        const r = randInt(2, 6);
+                        return { q: `Pole powierzchni kuli o promieniu ${r} (π ≈ 3)?`, a: 12 * r * r };
+                    }
+                },
+                {
+                    id: 'lo4-kombinatoryka',
+                    name: 'Kombinatoryka',
+                    desc: 'Silnie i kombinacje',
+                    gen: () => {
+                        const n = randInt(3, 6);
+                        if (Math.random() < 0.5) {
+                            let fact = 1;
+                            for (let i = 2; i <= n; i += 1) fact *= i;
+                            return { q: `${n}! = ?`, a: fact };
+                        }
+                        const total = randInt(4, 7);
+                        const chosen = randInt(2, 3);
+                        let combinations = 1;
+                        for (let i = 1; i <= chosen; i += 1) combinations = (combinations * (total - i + 1)) / i;
+                        return { q: `Ile jest kombinacji ${chosen} elementów ze zbioru ${total}-elementowego?`, a: Math.round(combinations) };
+                    }
+                },
+                {
+                    id: 'lo4-prawdopodobienstwo',
+                    name: 'Prawdopodobieństwo',
+                    desc: 'Zdarzenia losowe',
+                    gen: () => {
+                        const total = pickOne([4, 8, 10, 12]);
+                        const white = randInt(1, total - 1);
+                        return { q: `Losujemy jedną kulę z ${white} białych i ${total - white} czarnych. Prawdopodobieństwo białej?`, a: white / total, display: fracText(white, total) };
+                    }
+                },
+                {
+                    id: 'lo4-wariancja',
+                    name: 'Statystyka — wariancja',
+                    desc: 'Wariancja zestawu danych',
+                    gen: () => {
+                        const mean = randInt(6, 15);
+                        const d = randInt(1, 3);
+                        const values = [mean - 3 * d, mean - d, mean + d, mean + 3 * d];
+                        return { q: `Wariancja liczb ${values.join(', ')}?`, a: 5 * d * d, display: String(5 * d * d) };
+                    }
+                }
+            ]
+        }
+    };
+
+    // Kolejne poziomy konta wymagają coraz więcej EXP.
+    function expForNextLevel(level) {
+        return 50 * level * (level + 1);
+    }
+
+    function getLevelInfo(exp) {
+        let into = Math.max(0, Math.floor(Number(exp) || 0));
+        let level = 1;
+        let need = expForNextLevel(level);
+        while (into >= need && level < 200) {
+            into -= need;
+            level += 1;
+            need = expForNextLevel(level);
+        }
+        return { level, into, need };
+    }
+
+    function saveCurrentAccount() {
+        if (!currentAccount) return;
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        accounts[normalizeName(currentAccount.name)] = currentAccount;
+        writeStore(ACCOUNTS_KEY, accounts);
+    }
+
+    function renderAccountProgress(leveledUpTo) {
+        if (!currentAccount) return null;
+        const info = getLevelInfo(currentAccount.exp);
+        hudLevel.textContent = info.level;
+        hudExpText.textContent = `${info.into} / ${info.need} EXP`;
+        hudExpFill.style.width = `${Math.min(100, (info.into / info.need) * 100)}%`;
+        hudExpBar.setAttribute('aria-valuenow', String(Math.round(info.into)));
+        hudExpBar.setAttribute('aria-valuemax', String(info.need));
+        sessionLevel.textContent = `${gradeLabel(currentGrade)} · Lv ${info.level}`;
+        if (leveledUpTo) {
+            hudLevelWrap.classList.remove('levelup');
+            void hudLevelWrap.offsetWidth;
+            hudLevelWrap.classList.add('levelup');
+        }
+        return info;
+    }
+
+    function awardExp(amount) {
+        if (!currentAccount) return 0;
+        const before = getLevelInfo(currentAccount.exp).level;
+        currentAccount.exp = Math.max(0, (Number(currentAccount.exp) || 0) + amount);
+        saveCurrentAccount();
+        const info = getLevelInfo(currentAccount.exp);
+        const leveled = info.level > before;
+        renderAccountProgress(leveled ? info.level : 0);
+        return leveled ? info.level : 0;
+    }
+
+    function showLoginError(text) {
+        loginError.textContent = text;
+    }
+
+    function showLoginNotice(text) {
+        loginNotice.textContent = text;
+        loginNotice.classList.toggle('hidden', !text);
+    }
+
+    function showReturnError(text) {
+        returnError.textContent = text;
+    }
+
+    function requestDeleteAccount() {
+        if (!currentAccount) return;
+        deleteName.textContent = currentAccount.name;
+        deleteDialog.showModal();
+    }
+
+    function confirmDeleteAccount() {
+        if (!currentAccount) return;
+        const key = normalizeName(currentAccount.name);
+        const name = currentAccount.name;
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        delete accounts[key];
+        writeStore(ACCOUNTS_KEY, accounts);
+        const results = (readStore(RESULTS_KEY, []) || []).filter((entry) => {
+            if (!entry) return false;
+            return (entry.nameKey || normalizeName(entry.name)) !== key;
+        });
+        writeStore(RESULTS_KEY, results);
+        deleteDialog.close();
+        logoutPlayer();
+        showLoginNotice(`Konto „${name}” zostało usunięte.`);
+    }
+
+    function bumpScore() {
+        scoreDisplay.classList.remove('bump');
+        void scoreDisplay.offsetWidth;
+        scoreDisplay.classList.add('bump');
+    }
+
+    function renderLives(brokenIndex) {
+        while (livesDisplay.children.length < MAX_LIVES) {
+            const heart = document.createElement('span');
+            heart.className = 'heart';
+            heart.textContent = '♥';
+            livesDisplay.appendChild(heart);
+        }
+        [...livesDisplay.children].forEach((heart, index) => {
+            const lost = index >= lives;
+            heart.classList.remove('is-breaking');
+            heart.classList.toggle('is-lost', lost);
+            if (lost && index === brokenIndex) {
+                void heart.offsetWidth;
+                heart.classList.add('is-breaking');
+            }
+        });
+        livesDisplay.setAttribute('aria-label', `Pozostałe życia: ${Math.max(0, lives)} z ${MAX_LIVES}`);
+        livesBox.classList.toggle('is-critical', lives === 1);
+    }
+
+    function livesLeftLabel(count) {
+        if (count === 1) return 'Zostało Ci 1 życie.';
+        if (count >= 2 && count <= 4) return `Zostały Ci ${count} życia.`;
+        return `Zostało Ci ${count} żyć.`;
+    }
+
+    function toggleReturnPanel(force) {
+        const open = typeof force === 'boolean' ? force : returnForm.classList.contains('hidden');
+        returnForm.classList.toggle('hidden', !open);
+        returnToggle.textContent = open ? 'Ukryj' : 'Zaloguj się';
+        returnToggle.setAttribute('aria-expanded', String(open));
+        if (open) {
+            renderReturnAccounts();
+            returnName.focus();
+        }
+    }
+
+    function renderReturnAccounts() {
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        const names = Object.values(accounts)
+            .map((account) => account && account.name)
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b, 'pl'));
+        returnAccounts.innerHTML = '';
+        if (!names.length) {
+            const hint = document.createElement('span');
+            hint.className = 'return-hint';
+            hint.textContent = 'Nie masz jeszcze konta — utwórz je powyżej.';
+            returnAccounts.appendChild(hint);
+            return;
+        }
+        names.forEach((name) => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'account-chip';
+            chip.textContent = name;
+            chip.addEventListener('click', () => {
+                returnName.value = name;
+                returnPassword.focus();
+            });
+            returnAccounts.appendChild(chip);
+        });
+    }
+
+    function setActiveTab(view) {
+        const ranking = view === 'ranking';
+        tabPlay.classList.toggle('is-active', !ranking);
+        tabRanking.classList.toggle('is-active', ranking);
+        tabPlay.setAttribute('aria-selected', String(!ranking));
+        tabRanking.setAttribute('aria-selected', String(ranking));
+    }
+
+    function setView(view) {
+        const showRanking = view === 'ranking';
+        if (showRanking) {
+            togglePadExpand(false);
+            authArea.classList.add('hidden');
+            playArea.classList.add('hidden');
+            topicsScreen.classList.add('hidden');
+            rankingScreen.classList.remove('hidden');
+            setActiveTab('ranking');
+            renderLeaderboard();
+            return;
+        }
+        rankingScreen.classList.add('hidden');
+        if (playerName) {
+            authArea.classList.add('hidden');
+            if (roundActive) {
+                topicsScreen.classList.add('hidden');
+                playArea.classList.remove('hidden');
+            } else {
+                openTopics();
+                return;
+            }
+        } else {
+            authArea.classList.remove('hidden');
+            playArea.classList.add('hidden');
+            topicsScreen.classList.add('hidden');
+            renderReturnAccounts();
+        }
+        setActiveTab('play');
+    }
+
+    function renderTopics() {
+        const grade = CURRICULUM[currentGrade];
+        if (!grade) return;
+        topicsSub.textContent = `${grade.title} — działy zgodne z podstawą programową.`;
+        topicsGradeChip.textContent = grade.short;
+        topicGrid.innerHTML = '';
+        grade.topics.forEach((topic) => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'topic-card';
+            const name = document.createElement('h3');
+            name.textContent = topic.name;
+            const desc = document.createElement('p');
+            desc.textContent = topic.desc;
+            const go = document.createElement('span');
+            go.className = 'topic-go';
+            go.textContent = 'Zacznij →';
+            card.append(name, desc, go);
+            card.addEventListener('click', () => pickTopic(topic.id));
+            topicGrid.appendChild(card);
+        });
+    }
+
+    function openTopics() {
+        if (!currentAccount) return;
+        roundActive = false;
+        clearInterval(timerInterval);
+        timerInterval = null;
+        togglePadExpand(false);
+        authArea.classList.add('hidden');
+        playArea.classList.add('hidden');
+        rankingScreen.classList.add('hidden');
+        topicsScreen.classList.remove('hidden');
+        sessionName.textContent = currentAccount.name;
+        session.classList.remove('hidden');
+        renderAccountProgress();
+        setActiveTab('play');
+        renderTopics();
+    }
+
+    function pickTopic(topicId) {
+        const grade = CURRICULUM[currentGrade];
+        const topic = grade && grade.topics.find((item) => item.id === topicId);
+        if (!topic) return;
+        currentTopic = topic;
+        startGame();
+    }
+
+    function renderLeaderboard() {
+        if (!rankingLevel || !CURRICULUM[rankingLevel]) rankingLevel = currentGrade || 'sp1';
+        Object.entries(CURRICULUM).forEach(([code, grade]) => {
+            if ([...rankingLevels.children].some((btn) => btn.dataset.level === code)) return;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'level-tab';
+            btn.dataset.level = code;
+            btn.textContent = grade.short;
+            btn.setAttribute('role', 'tab');
+            btn.addEventListener('click', () => {
+                rankingLevel = code;
+                renderLeaderboard();
+            });
+            rankingLevels.appendChild(btn);
+        });
+        [...rankingLevels.children].forEach((btn) => {
+            const selected = btn.dataset.level === rankingLevel;
+            btn.classList.toggle('is-active', selected);
+            btn.setAttribute('aria-selected', String(selected));
+        });
+        rankingLevelChip.textContent = gradeLabel(rankingLevel);
+        renderRankingList();
+    }
+
+    function renderRankingList() {
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        const results = readStore(RESULTS_KEY, []) || [];
+        const best = new Map();
+        results.forEach((entry) => {
+            if (!entry) return;
+            const entryGrade = entry.grade || entry.level;
+            if (entryGrade !== rankingLevel) return;
+            const key = entry.nameKey || normalizeName(entry.name);
+            const value = Number(entry.score) || 0;
+            if (!key || value <= 0) return;
+            const prev = best.get(key);
+            if (!prev || value > prev.score) {
+                best.set(key, { name: entry.name || key, score: value });
+            }
+        });
+
+        const me = normalizeName(playerName);
+        const rows = [...best.entries()].map(([key, value]) => {
+            const account = accounts[key];
+            return {
+                key,
+                name: value.name,
+                score: value.score,
+                level: account ? getLevelInfo(account.exp).level : null
+            };
+        }).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'pl')).slice(0, 10);
+
+        rankingList.innerHTML = '';
+        rows.forEach((row, index) => {
+            const li = document.createElement('li');
+            li.className = 'ranking-row' + (row.key === me ? ' is-me' : '');
+
+            const pos = document.createElement('span');
+            pos.className = 'rank-pos';
+            pos.textContent = index + 1;
+
+            const name = document.createElement('span');
+            name.className = 'rank-name';
+            const text = document.createElement('span');
+            text.className = 'rank-text';
+            text.textContent = row.name;
+            name.appendChild(text);
+            if (row.level) {
+                const level = document.createElement('span');
+                level.className = 'rank-level';
+                level.textContent = 'Lv ' + row.level;
+                name.appendChild(level);
+            }
+            if (row.key === me) {
+                const you = document.createElement('span');
+                you.className = 'rank-you';
+                you.textContent = 'Ty';
+                name.appendChild(you);
+            }
+
+            const scoreEl = document.createElement('span');
+            scoreEl.className = 'rank-score';
+            scoreEl.textContent = row.score;
+            const unit = document.createElement('small');
+            unit.textContent = 'EXP';
+            scoreEl.appendChild(unit);
+
+            li.append(pos, name, scoreEl);
+            rankingList.appendChild(li);
+        });
+        rankingEmpty.classList.toggle('hidden', rows.length > 0);
+    }
+
+    function recordRoundResult() {
+        if (!currentAccount || score <= 0) return;
+        const results = readStore(RESULTS_KEY, []) || [];
+        results.push({
+            name: playerName,
+            nameKey: normalizeName(playerName),
+            grade: currentGrade,
+            topic: currentTopic ? currentTopic.name : '',
+            score: score,
+            when: new Date().toISOString()
+        });
+        while (results.length > 400) results.shift();
+        writeStore(RESULTS_KEY, results);
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        showLoginNotice('');
+
+        const name = playerNameInput.value.trim().replace(/\s+/g, ' ');
+        if (name.length < 2) {
+            showLoginError('Wpisz swoje imię (co najmniej 2 znaki).');
+            playerNameInput.focus();
+            return;
+        }
+        const password = playerPasswordInput.value;
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            showLoginError(`Hasło musi mieć co najmniej ${MIN_PASSWORD_LENGTH} znaków.`);
+            playerPasswordInput.focus();
+            return;
+        }
+        if (!levelSelect.value) {
+            showLoginError('Wybierz swoją klasę.');
+            levelSelect.focus();
+            return;
+        }
+
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        const key = normalizeName(name);
+        if (accounts[key]) {
+            showLoginError('To imię ma już konto. Przewiń niżej i wybierz „Zaloguj się”.');
+            toggleReturnPanel(true);
+            returnName.value = accounts[key].name || name;
+            returnName.focus();
+            return;
+        }
+
+        showLoginError('');
+        currentAccount = {
+            name,
+            grade: levelSelect.value,
+            exp: 0,
+            passwordHash: await hashPassword(name, password),
+            time: parseInt(timeSelect.value, 10) || 0,
+            createdAt: new Date().toISOString()
+        };
+        playerName = name;
+        currentGrade = currentAccount.grade;
+        initialTime = parseInt(timeSelect.value, 10) || 0;
+        playerPasswordInput.value = '';
+        saveCurrentAccount();
+        openTopics();
+    });
+
+    returnForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        showLoginNotice('');
+
+        const name = returnName.value.trim().replace(/\s+/g, ' ');
+        if (name.length < 2) {
+            showReturnError('Wpisz imię użyte przy zakładaniu konta.');
+            returnName.focus();
+            return;
+        }
+        const password = returnPassword.value;
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            showReturnError(`Hasło musi mieć co najmniej ${MIN_PASSWORD_LENGTH} znaków.`);
+            returnPassword.focus();
+            return;
+        }
+
+        const accounts = readStore(ACCOUNTS_KEY, {}) || {};
+        const account = accounts[normalizeName(name)];
+        if (!account) {
+            showReturnError('Nie znaleźliśmy takiego konta. Sprawdź imię albo utwórz nowe konto powyżej.');
+            return;
+        }
+
+        const passwordHash = await hashPassword(account.name || name, password);
+        if (account.passwordHash) {
+            if (account.passwordHash !== passwordHash) {
+                showReturnError('Nieprawidłowe hasło. Spróbuj ponownie.');
+                returnPassword.select();
+                return;
+            }
+        } else {
+            // konto sprzed wprowadzenia haseł — pierwsze logowanie ustawia hasło
+            account.passwordHash = passwordHash;
+            writeStore(ACCOUNTS_KEY, accounts);
+        }
+
+        showReturnError('');
+        currentAccount = {
+            name: account.name || name,
+            grade: account.grade || account.level || 'sp1',
+            exp: Number(account.exp) || 0,
+            passwordHash: account.passwordHash,
+            time: account.time === 0 || account.time ? Number(account.time) : 45
+        };
+        playerName = currentAccount.name;
+        currentGrade = currentAccount.grade;
+        initialTime = currentAccount.time;
+        timeSelect.value = String(initialTime);
+        returnName.value = '';
+        returnPassword.value = '';
+        toggleReturnPanel(false);
+        openTopics();
+    });
+
+    function startGame() {
+        if (!currentAccount || !currentTopic) return;
+
+        timeLeft = initialTime;
+        score = 0;
+        lives = MAX_LIVES;
+        roundActive = true;
+        roundStartLevel = getLevelInfo(currentAccount.exp).level;
+        rankingLevel = currentGrade;
+        scoreDisplay.textContent = '0';
+        scoreDisplay.classList.remove('bump');
+        renderLives();
+        message.textContent = '';
+        message.className = '';
+        showLoginError('');
+        showLoginNotice('');
+        showReturnError('');
+
+        greeting.textContent = `Powodzenia, ${currentAccount.name}!`;
+        greetingSub.textContent = initialTime > 0
+            ? `Temat: ${currentTopic.name}. Masz ${initialTime} sekund i ${MAX_LIVES} życia.`
+            : `Temat: ${currentTopic.name}. Bez limitu czasu, ale ${MAX_LIVES} życia.`;
+        levelChip.textContent = currentTopic.name;
+
+        sessionName.textContent = currentAccount.name;
+        session.classList.remove('hidden');
+
+        authArea.classList.add('hidden');
+        rankingScreen.classList.add('hidden');
+        topicsScreen.classList.add('hidden');
+        playArea.classList.remove('hidden');
+        endScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        endLevelup.classList.add('hidden');
+        setActiveTab('play');
+        togglePadExpand(false);
+
+        renderAccountProgress();
+        renderReturnAccounts();
+
+        timerBox.classList.remove('is-low');
+        if (initialTime === 0) {
+            timerBox.classList.add('hidden');
+        } else {
+            timerBox.classList.remove('hidden');
+            timerDisplay.textContent = timeLeft;
+        }
+
+        clearInterval(timerInterval);
+        timerInterval = null;
+
+        generateQuestion();
+        resizeCanvas();
+        userAnswer.focus();
+
+        if (initialTime > 0) {
+            timerInterval = setInterval(() => {
+                timeLeft -= 1;
+                timerDisplay.textContent = Math.max(0, timeLeft);
+                timerBox.classList.toggle('is-low', timeLeft <= 10);
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    endGame();
+                }
+            }, 1000);
+        }
+    }
+
+    function formatNumber(value) {
+        return String(Math.round(value * 1e6) / 1e6).replace('.', ',');
+    }
+
+    function parseAnswer(raw) {
+        const text = String(raw || '').trim().replace(/\s+/g, ' ').replace(',', '.');
+        if (!text) return NaN;
+
+        const mixed = text.match(/^(-?\d+) (\d+)\/(\d+)$/);
+        if (mixed) {
+            const whole = parseInt(mixed[1], 10);
+            const num = parseInt(mixed[2], 10);
+            const den = parseInt(mixed[3], 10);
+            if (!den) return NaN;
+            return whole < 0 ? whole - num / den : whole + num / den;
+        }
+
+        const fraction = text.match(/^(-?\d+)\/(-?\d+)$/);
+        if (fraction) {
+            const den = parseInt(fraction[2], 10);
+            if (!den) return NaN;
+            return parseInt(fraction[1], 10) / den;
+        }
+
+        if (!/^-?\d*\.?\d+$/.test(text)) return NaN;
+        return parseFloat(text);
+    }
+
+    function generateQuestion() {
+        if (!currentTopic) return;
+        const question = currentTopic.gen();
+        correctAnswer = Number(question.a);
+        correctDisplay = (question.display || formatNumber(correctAnswer)).replace(/\./g, ',');
+        questionText.textContent = question.q;
+        questionText.classList.remove('pop');
+        void questionText.offsetWidth;
+        questionText.classList.add('pop');
+        userAnswer.value = '';
+    }
+
+    function checkAnswer(e) {
+        e.preventDefault();
+        if (!roundActive) return;
+        const raw = userAnswer.value.trim();
+        if (raw === '') {
+            message.className = 'bad';
+            message.textContent = 'Najpierw wpisz wynik.';
+            userAnswer.focus();
+            return;
+        }
+
+        const userVal = parseAnswer(raw);
+        const isCorrect = Number.isFinite(userVal) && Math.abs(userVal - correctAnswer) < 1e-6;
+        if (isCorrect) {
+            score += 10;
+            scoreDisplay.textContent = score;
+            bumpScore();
+            const leveledUpTo = awardExp(10);
+            message.className = 'good';
+            message.textContent = leveledUpTo
+                ? `Dobrze! +10 EXP i awans na poziom ${leveledUpTo}!`
+                : 'Dobrze! +10 EXP';
+            generateQuestion();
+        } else {
+            lives = Math.max(0, lives - 1);
+            renderLives(lives);
+            if (lives <= 0) {
+                message.className = 'bad';
+                message.textContent = `Błąd! Poprawna odpowiedź: ${correctDisplay}. Skończyły się życia!`;
+                endGame('lives');
+                return;
+            }
+            message.className = 'bad';
+            message.textContent = `Błąd! Poprawna odpowiedź: ${correctDisplay}. ${livesLeftLabel(lives)}`;
+            generateQuestion();
+        }
+        userAnswer.focus();
+    }
+
+    function endGame(reason) {
+        if (!roundActive) return;
+        roundActive = false;
+        clearInterval(timerInterval);
+        timerInterval = null;
+
+        const info = renderAccountProgress();
+        togglePadExpand(false);
+        gameScreen.classList.add('hidden');
+        endScreen.classList.remove('hidden');
+        if (reason === 'lives') {
+            endTitle.textContent = 'Skończyły się życia!';
+        } else {
+            endTitle.textContent = timeLeft <= 0 && initialTime > 0 ? 'Koniec czasu!' : 'Runda zakończona';
+        }
+        finalScore.textContent = score;
+        endPlayer.textContent = currentTopic
+            ? `${currentAccount.name} · ${gradeLabel(currentGrade)} · ${currentTopic.name}`
+            : `${currentAccount.name} · ${gradeLabel(currentGrade)}`;
+        endAccount.textContent = `Poziom konta ${info.level} · ${info.into} / ${info.need} EXP`;
+        if (info.level > roundStartLevel) {
+            endLevelup.textContent = `Awans! Nowy poziom konta: ${info.level}.`;
+            endLevelup.classList.remove('hidden');
+        } else {
+            endLevelup.classList.add('hidden');
+        }
+        recordRoundResult();
+    }
+
+    function replayGame() {
+        if (!playerName || !currentAccount || !currentTopic) return;
+        startGame();
+    }
+
+    function logoutPlayer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        roundActive = false;
+        playerName = '';
+        currentAccount = null;
+        currentGrade = '';
+        currentTopic = null;
+        score = 0;
+        lives = MAX_LIVES;
+        renderLives();
+
+        togglePadExpand(false);
+        gameScreen.classList.add('hidden');
+        endScreen.classList.add('hidden');
+        playArea.classList.add('hidden');
+        session.classList.add('hidden');
+        rankingScreen.classList.add('hidden');
+        topicsScreen.classList.add('hidden');
+        authArea.classList.remove('hidden');
+        loginForm.reset();
+        levelSelect.value = '';
+        timeSelect.value = '45';
+        showLoginError('');
+        showLoginNotice('');
+        showReturnError('');
+        message.textContent = '';
+        message.className = '';
+        returnName.value = '';
+        returnPassword.value = '';
+        toggleReturnPanel(false);
+        renderReturnAccounts();
+        setActiveTab('play');
+        playerNameInput.focus();
+    }
+
+    renderReturnAccounts();
+</script>
+
+<script>
+    // --- INTRO: kot przy tablicy + nazwa witryny ---
+    (function () {
+        const overlay = document.getElementById('intro-overlay');
+        const scene = document.getElementById('intro-scene');
+        const nameBox = document.getElementById('intro-name');
+        const tagline = document.getElementById('intro-tagline');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const timers = [];
+        let finished = false;
+
+        const siteName = 'Kocury w matmę';
+        [...siteName].forEach((char, index) => {
+            const span = document.createElement('span');
+            span.className = char === ' ' ? 'letter space' : 'letter';
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.style.setProperty('--i', index);
+            nameBox.appendChild(span);
+        });
+
+        function at(ms, fn) {
+            timers.push(setTimeout(fn, ms));
+        }
+
+        function finishIntro() {
+            if (finished) return;
+            finished = true;
+            timers.forEach(clearTimeout);
+            overlay.classList.add('is-gone');
+            document.body.classList.remove('intro-open');
+
+            document.title = siteName;
+            const heading = document.querySelector('h1');
+            if (heading) {
+                heading.textContent = siteName;
+                heading.classList.add('name-flash');
+            }
+
+            setTimeout(() => {
+                overlay.remove();
+                const nameField = document.getElementById('player-name');
+                const login = document.getElementById('login-screen');
+                if (nameField && login && !login.classList.contains('hidden')) {
+                    nameField.focus();
+                }
+            }, 1000);
+        }
+
+        function playIntro() {
+            if (reduceMotion.matches) {
+                finishIntro();
+                return;
+            }
+
+            document.body.classList.add('intro-open');
+
+            at(300, () => scene.classList.add('writing'));
+            at(2200, () => scene.classList.add('solved'));
+            at(2900, () => scene.classList.add('look-back'));
+            at(4300, () => scene.classList.remove('look-back'));
+            at(4500, () => {
+                nameBox.classList.add('show');
+                tagline.classList.add('show');
+            });
+            at(7200, finishIntro);
+        }
+
+        overlay.addEventListener('click', finishIntro);
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+                finishIntro();
+            }
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', playIntro);
+        } else {
+            playIntro();
+        }
+    })();
+</script>
+
+</body>
+</html>
